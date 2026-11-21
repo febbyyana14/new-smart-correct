@@ -1,0 +1,482 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0" name="viewport"><meta content="web_dashboard" name="shell-type"><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{"colors":{"primary":"#004ac6","surface-container":"#eaedff","surface-container-highest":"#dae2fd","tertiary-fixed":"#ffdbcd","surface-bright":"#faf8ff","secondary-fixed":"#ffdbca","on-primary-container":"#eeefff","secondary-fixed-dim":"#ffb690","inverse-surface":"#283044","on-surface-variant":"#434655","error":"#ba1a1a","primary-fixed-dim":"#b4c5ff","on-tertiary":"#ffffff","inverse-primary":"#b4c5ff","primary-container":"#2563eb","on-error":"#ffffff","surface-variant":"#dae2fd","surface":"#faf8ff","on-tertiary-fixed-variant":"#7d2d00","on-secondary-fixed-variant":"#783200","on-background":"#131b2e","secondary-container":"#fd761a","on-secondary-fixed":"#341100","surface-tint":"#0053db","on-secondary":"#ffffff","surface-container-high":"#e2e7ff","surface-container-low":"#f2f3ff","tertiary-container":"#bc4800","outline-variant":"#c3c6d7","error-container":"#ffdad6","on-tertiary-fixed":"#360f00","outline":"#737686","background":"#faf8ff","inverse-on-surface":"#eef0ff","on-tertiary-container":"#ffede6","on-primary-fixed-variant":"#003ea8","on-error-container":"#93000a","on-secondary-container":"#5c2400","surface-container-lowest":"#ffffff","on-primary":"#ffffff","on-primary-fixed":"#00174b","surface-dim":"#d2d9f4","secondary":"#9d4300","primary-fixed":"#dbe1ff","on-surface":"#131b2e","tertiary-fixed-dim":"#ffb596","tertiary":"#943700"},"borderRadius":{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},"spacing":{"gutter-mobile":"1rem","space-2xl":"3rem","space-lg":"1.5rem","space-sm":"0.5rem","space-md":"1rem","margin-mobile":"1rem","margin":"2rem","space-xs":"0.25rem","space-xl":"2rem","gutter":"1.5rem"},"fontFamily":{"code-sm":["JetBrains Mono"],"headline-lg-mobile":["Plus Jakarta Sans"],"headline-md":["Plus Jakarta Sans"],"body-md":["Plus Jakarta Sans"],"body-lg":["Plus Jakarta Sans"],"display-mobile":["Plus Jakarta Sans"],"headline-sm":["Plus Jakarta Sans"],"title-md":["Plus Jakarta Sans"],"label-md":["Plus Jakarta Sans"],"headline-lg":["Plus Jakarta Sans"],"body-sm":["Plus Jakarta Sans"],"title-sm":["Plus Jakarta Sans"],"display":["Plus Jakarta Sans"],"label-sm":["Plus Jakarta Sans"],"code-md":["JetBrains Mono"]},"fontSize":{"code-sm":["11px",{"lineHeight":"16px","letterSpacing":"0em","fontWeight":"500"}],"headline-lg-mobile":["24px",{"lineHeight":"32px","letterSpacing":"-0.015em","fontWeight":"600"}],"headline-md":["24px",{"lineHeight":"32px","letterSpacing":"-0.015em","fontWeight":"600"}],"body-md":["14px",{"lineHeight":"20px","letterSpacing":"0em","fontWeight":"400"}],"body-lg":["16px",{"lineHeight":"24px","letterSpacing":"0em","fontWeight":"400"}],"display-mobile":["28px",{"lineHeight":"36px","letterSpacing":"-0.02em","fontWeight":"700"}],"headline-sm":["20px",{"lineHeight":"28px","letterSpacing":"-0.01em","fontWeight":"600"}],"title-md":["16px",{"lineHeight":"24px","letterSpacing":"-0.005em","fontWeight":"600"}],"label-md":["12px",{"lineHeight":"16px","letterSpacing":"0.02em","fontWeight":"600"}],"headline-lg":["30px",{"lineHeight":"38px","letterSpacing":"-0.02em","fontWeight":"700"}],"body-sm":["13px",{"lineHeight":"18px","letterSpacing":"0em","fontWeight":"400"}],"title-sm":["14px",{"lineHeight":"20px","letterSpacing":"0em","fontWeight":"600"}],"display":["36px",{"lineHeight":"44px","letterSpacing":"-0.025em","fontWeight":"700"}],"label-sm":["11px",{"lineHeight":"14px","letterSpacing":"0.04em","fontWeight":"600"}],"code-md":["13px",{"lineHeight":"18px","letterSpacing":"-0.01em","fontWeight":"500"}]}}}};</script></head><body class="bg-surface font-body-md text-on-surface antialiased"><aside class="fixed left-0 top-0 h-full w-[250px] bg-[#0F172A] z-50 flex flex-col justify-between select-none shadow-[0_1px_8px_rgba(0,0,0,0.12)]"><div class="flex flex-col"><div class="h-16 px-space-md flex items-center justify-between border-b border-slate-800/80"><div class="flex items-center gap-space-sm"><img alt="SmartCorrect Brand Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/ALJJyrCGm_E1sXQIZLFlNjyq5iolMgKkpzCsJoaF-stGrZ6HSS3IL8VC8ttWf3z0ievF5MTLxMXO9qWx2KR-HZppHUb-kDQHvASn6c2vldejHtepk2jyEmd6uDDoqwLOq2R8AMnICUg02_ChNyGo1Xdd9HVaVLcP1UVSKVUXbEDOGA4wuq6e4pmcmEHGz5YRumzsYY_KShLWOv-fEDA_F8dsinyo2_btMIrxR_QxlDJZX0o"><div class="flex flex-col"><span class="font-title-sm text-white tracking-tight leading-none">SmartCorrect</span><span class="font-code-sm text-[10px] text-slate-400 leading-tight uppercase tracking-wider mt-1">Koreksi &amp; Psikometri</span></div></div></div><div class="px-space-sm py-space-sm"><div class="px-space-sm py-space-xs text-[11px] font-label-sm uppercase tracking-wider text-slate-400">PLATFORM</div><nav class="flex flex-col gap-1" data-active-classes="bg-primary-container text-on-primary-container font-title-sm shadow-sm"><a class="flex items-center justify-between px-space-sm py-2 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition-colors text-body-sm font-title-sm" data-path="dashboard" href="#"><div class="flex items-center gap- space-sm"><span class="material-symbols-outlined text-[18px] mr-2">dashboard</span><span>Dasbor</span></div></a><a class="flex items-center justify-between px-space-sm py-2 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition-colors text-body-sm font-title-sm" data-path="exams" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[18px] mr-2">description</span><span>Paket Ujian</span></div></a><a class="flex items-center justify-between px-space-sm py-2 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition-colors text-body-sm font-title-sm" data-path="answer-keys" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[18px] mr-2">key</span><span>Kunci Jawaban</span></div></a><a class="flex items-center justify-between px-space-sm py-2 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition-colors text-body-sm font-title-sm" data-path="live-scanner" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[18px] mr-2">photo_camera</span><span>Pindai Langsung</span></div></a><a aria-current="page" class="flex items-center justify-between px-space-sm py-2 rounded-lg transition-colors bg-primary-container text-on-primary-container font-title-sm shadow-sm" data-path="review-queue" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[18px] mr-2">error</span><span>Antrean Verifikasi</span></div><span class="px-2 py-0.5 rounded-full text-label-sm font-label-sm bg-secondary-container text-on-secondary">4</span></a><a class="flex items-center justify-between px-space-sm py-2 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition-colors text-body-sm font-title-sm" data-path="psychometrics" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[18px] mr-2">bar_chart</span><span>Psikometri</span></div></a><a class="flex items-center justify-between px-space-sm py-2 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition-colors text-body-sm font-title-sm" data-path="export-reports" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[18px] mr-2">download</span><span>Ekspor Laporan</span></div></a></nav><div class="mt-space-md pt-space-xs border-t border-slate-800/80"><div class="px-space-sm py-space-xs text-[11px] font-label-sm uppercase tracking-wider text-slate-400">ADMINISTRASI</div><nav class="flex flex-col gap-1 mt-1" data-active-classes="bg-primary-container text-on-primary-container font-title-sm shadow-sm"><a class="flex items-center justify-between px-space-sm py-2 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition-colors text-body-sm font-title-sm" data-path="license-and-saas" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[18px] mr-2">verified_user</span><span>Lisensi &amp; SaaS</span></div></a><a class="flex items-center justify-between px-space-sm py-2 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition-colors text-body-sm font-title-sm" data-path="system-settings" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[18px] mr-2">settings</span><span>Pengaturan Sistem</span></div></a></nav></div></div></div><div class="p-space-sm border-t border-slate-800/80 bg-slate-900/60"><div class="flex items-center justify-between p-1.5 rounded-lg hover:bg-slate-800/60 transition-colors"><div class="flex items-center gap-2 overflow-hidden"><div class="relative flex-shrink-0"><img alt="Pak Budi Profile Avatar" class="w-8 h-8 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBJUMULcPtbEG6Pyk2r0oLIo0EjpeqHQlE30JXYBWbXBeJPTkaAxLsp1rXS1XReLdI4rj7qYZTBVWPE8-NAZVEqylkYHdEJGzAPKGCRWAtMeqndygaGs64FdlcWWQWltUjNMBBBEPrCE4GMGESPnIqSLkFc_o4MCMQ6AzNo1UosTESlZnmlWA2e9hqHjv5vyg5mXwC6HU1Qpd9Imua1cZiDROCkLpk0epvqKwOlFG8"><div class="absolute bottom-0 right-0 w-2 h-2 rounded-full bg-emerald-500 ring-2 ring-[#0F172A]"></div></div><div class="flex flex-col min-w-0"><span class="font-title-sm text-[13px] text-white truncate leading-tight">Pak Budi, S.Pd.</span><span class="font-body-sm text-[11px] text-slate-400 truncate leading-tight">Guru Matematika</span></div></div><a class="text-slate-400 hover:text-white p-1 rounded-md transition-colors" href="#" title="Logout"><span class="material-symbols-outlined text-[18px]">logout</span></a></div></div></aside><div class="pl-[250px]"><header class="fixed top-0 left-[250px] right-0 h-16 bg-surface/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 px-space-lg flex items-center justify-between border-b border-outline-variant/30"><div class="flex items-center gap-space-md"><div class="flex items-center gap-2 px-space-sm py-1.5 rounded-lg bg-surface-container hover:bg-surface-container-high transition-colors cursor-pointer"><span class="material-symbols-outlined text-primary text-[18px]">domain</span><span class="font-title-sm text-body-sm text-on-surface">SMAN 1 Bandung</span><span class="material-symbols-outlined text-on-surface-variant text-[16px]">unfold_more</span></div><div class="h-4 w-px bg-outline-variant/60"></div><nav class="flex items-center gap-1.5 text-body-sm"><span class="text-on-surface-variant">Academic Year 2024/2025</span><span class="material-symbols-outlined text-outline text-[14px]">chevron_right</span><span class="font-title-sm text-primary">Penilaian Akhir Semester</span></nav></div><div class="flex items-center gap-space-md"><div class="flex items-center gap-2 px-3 py-1 rounded-full bg-[#DBEAFE] border border-[#93C5FD]"><span class="relative flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span></span><span class="font-label-sm text-[11px] font-semibold text-[#1E40AF] tracking-wide">License: 45 Days Remaining</span></div><button class="relative p-2 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors" type="button"><span class="material-symbols-outlined text-[20px]">notifications</span><span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-error"></span></button><button class="p-2 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors" type="button"><span class="material-symbols-outlined text-[20px]">light_mode</span></button><div class="h-6 w-px bg-outline-variant/60"></div><div class="flex items-center gap-2.5 pl-1 cursor-pointer"><img alt="Profile" class="w-8 h-8 rounded-full object-cover shadow-sm" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBJUMULcPtbEG6Pyk2r0oLIo0EjpeqHQlE30JXYBWbXBeJPTkaAxLsp1rXS1XReLdI4rj7qYZTBVWPE8-NAZVEqylkYHdEJGzAPKGCRWAtMeqndygaGs64FdlcWWQWltUjNMBBBEPrCE4GMGESPnIqSLkFc_o4MCMQ6AzNo1UosTESlZnmlWA2e9hqHjv5vyg5mXwC6HU1Qpd9Imua1cZiDROCkLpk0epvqKwOlFG8"><div class="flex flex-col text-left"><span class="font-title-sm text-[13px] text-on-surface leading-tight">Pak Budi</span><span class="font-body-sm text-[11px] text-on-surface-variant leading-tight">Evaluator</span></div><span class="material-symbols-outlined text-on-surface-variant text-[16px]">expand_more</span></div></div></header><main class="relative pt-16 bg-[#F8FAFC] min-h-screen"><div class="flex flex-col w-full">
+<!-- Top Context Sub-header -->
+<div class="px-space-lg py-space-md bg-surface-container-lowest shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-space-md">
+<div class="flex flex-col gap-1 min-w-0">
+<!-- Breadcrumb & System Tags -->
+<div class="flex items-center gap-2 flex-wrap">
+<span class="font-code-sm text-code-sm text-outline flex items-center gap-1">
+<span>Verifikasi</span>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<span>Antrean Koreksi Siswa</span>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<span class="text-primary font-title-sm">PAS Matematika X</span>
+</span>
+<div class="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary-container animate-pulse"></span>
+<span class="font-label-sm text-label-sm">Lembar 1 dari 4 Perlu Review</span>
+</div>
+<div class="flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[13px] text-tertiary">tune</span>
+<span>Ambiguitas Rendah (&lt; 80%)</span>
+</div>
+</div>
+<!-- Screen Title -->
+<h1 class="font-headline-md text-headline-md text-on-surface tracking-tight">Antrean Verifikasi Jawaban (Review Queue)</h1>
+</div>
+<!-- Quick Global Actions -->
+<div class="flex items-center gap-space-sm flex-shrink-0">
+<button class="group flex items-center gap-2 px-3.5 py-2 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface transition-all duration-150 shadow-sm active:scale-95" type="button">
+<span class="material-symbols-outlined text-[18px] text-tertiary-container group-hover:scale-110 transition-transform">bolt</span>
+<span class="font-title-sm text-title-sm">Verifikasi Otomatis yang Mirip (&gt; 75%)</span>
+<span class="px-1.5 py-0.5 rounded text-code-sm font-code-sm bg-surface-container-highest text-on-surface-variant">3 item</span>
+</button>
+<button class="flex items-center gap-2 px-4 py-2 rounded-lg bg-surface-container-highest hover:bg-surface-dim text-on-surface-variant hover:text-on-surface transition-colors shadow-sm" type="button">
+<span class="material-symbols-outlined text-[18px]">save</span>
+<span class="font-title-sm text-title-sm">Simpan &amp; Keluar</span>
+</button>
+</div>
+</div>
+<!-- Main Split-Screen Workspace (calc(100vh - 160px)) -->
+<div class="p-space-lg">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg h-auto lg:h-[calc(100vh-172px)] min-h-[680px]">
+<!-- LEFT PANEL: High-Resolution Visual Inspection Viewport (55% / 7 cols) -->
+<div class="lg:col-span-7 flex flex-col h-full rounded-xl bg-inverse-surface shadow-md overflow-hidden relative select-none">
+<!-- Floating Top Inspection Toolbar -->
+<div class="absolute top-4 left-4 right-4 z-20 flex items-center justify-between pointer-events-none">
+<div class="flex items-center gap-1 p-1 rounded-xl bg-inverse-surface/85 backdrop-blur-md shadow-lg pointer-events-auto">
+<button class="p-2 rounded-lg text-inverse-on-surface hover:bg-surface-container/20 hover:text-white transition-colors" id="btn-zoom-in" title="Zoom In (+)" type="button">
+<span class="material-symbols-outlined text-[18px]">zoom_in</span>
+</button>
+<button class="p-2 rounded-lg text-inverse-on-surface hover:bg-surface-container/20 hover:text-white transition-colors" id="btn-zoom-out" title="Zoom Out (-)" type="button">
+<span class="material-symbols-outlined text-[18px]">zoom_out</span>
+</button>
+<button class="px-2.5 py-1 rounded-lg text-code-sm font-code-sm text-inverse-on-surface hover:bg-surface-container/20 transition-colors" id="btn-zoom-reset" type="button">
+              100%
+            </button>
+<div class="w-px h-4 bg-outline-variant/30 my-auto"></div>
+<button class="p-2 rounded-lg text-inverse-on-surface hover:bg-surface-container/20 hover:text-white transition-colors" id="btn-rotate" title="Putar 90°" type="button">
+<span class="material-symbols-outlined text-[18px]">rotate_right</span>
+</button>
+<button class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-code-sm font-code-sm text-inverse-on-surface hover:bg-surface-container/20 transition-colors" id="btn-high-contrast" title="B/W Mode" type="button">
+<span class="material-symbols-outlined text-[16px]">contrast</span>
+<span>B/W OMR</span>
+</button>
+<button class="p-2 rounded-lg text-inverse-on-surface hover:bg-surface-container/20 hover:text-white transition-colors" id="btn-fit" title="Reset View" type="button">
+<span class="material-symbols-outlined text-[18px]">restart_alt</span>
+</button>
+</div>
+<!-- Quick Optical Sensor Diagnostic Pill -->
+<div class="pointer-events-auto flex items-center gap-2 px-3 py-1.5 rounded-full bg-inverse-surface/90 backdrop-blur-md shadow-lg text-inverse-on-surface">
+<span class="w-2 h-2 rounded-full bg-secondary-container animate-ping"></span>
+<span class="font-code-sm text-code-sm">Cahaya: 94.2 lx • Sensor Calibrated</span>
+</div>
+</div>
+<!-- Viewport Canvas Area with Grid Scaffolding -->
+<div class="relative flex-1 w-full h-full overflow-hidden flex items-center justify-center p-6 bg-[#0B1120] cursor-grab active:cursor-grabbing" id="scan-viewport">
+<!-- Ambient Blueprint/Grid Lines Overlay -->
+<div class="absolute inset-0 opacity-15 pointer-events-none" style="background-image: radial-gradient(#60A5FA 1px, transparent 1px); background-size: 24px 24px;"></div>
+<!-- Document Canvas Wrapper -->
+<div class="relative w-full max-w-[540px] bg-surface-container-lowest rounded-sm shadow-2xl transition-transform duration-200" id="paper-transform-layer" style="aspect-ratio: 1 / 1.35; transform: scale(1) rotate(0deg);">
+<!-- Real Lined Student Notebook Paper Texture -->
+<div class="absolute inset-0 overflow-hidden rounded-sm" style="background: repeating-linear-gradient(#FFFFFF, #FFFFFF 27px, #E2E8F0 28px);">
+<!-- Notebook Margin Vertical Red Line -->
+<div class="absolute top-0 bottom-0 left-12 w-0.5 bg-error/30"></div>
+<!-- Top Sheet Header / Identification Written by Student -->
+<div class="pt-4 pl-16 pr-6 pb-2 text-on-surface-variant font-code-sm text-code-sm flex justify-between items-center opacity-85">
+<div class="flex flex-col">
+<span class="font-title-sm text-body-sm text-on-surface font-semibold tracking-tight">Lembar Jawaban PAS Matematika - Bag. II</span>
+<span>Nama: Ahmad Fauzi (X-MIPA-1)</span>
+</div>
+<div class="text-right">
+<span class="text-error font-title-sm">KODE: MAT-X-02</span>
+</div>
+</div>
+<!-- Answer Rows Container -->
+<div class="pt-4 pl-16 pr-8 space-y-4 font-code-md text-[17px] text-on-surface">
+<!-- Soal 15 (Clear Confirmed) -->
+<div class="relative flex items-center justify-between py-1 group">
+<div class="flex items-center gap-3">
+<span class="w-8 font-semibold text-outline">15.</span>
+<span class="px-2 py-0.5 rounded font-display text-[22px] tracking-widest text-[#1E293B]">A</span>
+</div>
+<div class="flex items-center gap-1.5 opacity-60 group-hover:opacity-100 transition-opacity">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+<span class="font-code-sm text-code-sm text-outline">Pasti (98%)</span>
+</div>
+</div>
+<!-- Soal 16 (Clear Confirmed) -->
+<div class="relative flex items-center justify-between py-1 group">
+<div class="flex items-center gap-3">
+<span class="w-8 font-semibold text-outline">16.</span>
+<span class="px-2 py-0.5 rounded font-display text-[22px] tracking-widest text-[#1E293B]">C</span>
+</div>
+<div class="flex items-center gap-1.5 opacity-60 group-hover:opacity-100 transition-opacity">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+<span class="font-code-sm text-code-sm text-outline">Pasti (95%)</span>
+</div>
+</div>
+<!-- SOAL 17: TARGET AMBIGUOUS ITEM WITH NEON GLOW BOUNDING BOX -->
+<div class="relative -mx-3 px-3 py-2 rounded-xl bg-tertiary-fixed/30 shadow-[0_0_24px_rgba(253,118,26,0.35)] transition-all">
+<!-- Pulsing HUD Corner Accents -->
+<div class="absolute -top-1.5 -left-1.5 w-3 h-3 border-t-2 border-l-2 border-secondary-container"></div>
+<div class="absolute -top-1.5 -right-1.5 w-3 h-3 border-t-2 border-r-2 border-secondary-container"></div>
+<div class="absolute -bottom-1.5 -left-1.5 w-3 h-3 border-b-2 border-l-2 border-secondary-container"></div>
+<div class="absolute -bottom-1.5 -right-1.5 w-3 h-3 border-b-2 border-r-2 border-secondary-container"></div>
+<!-- Floating HUD Diagnostic Badge -->
+<div class="absolute -top-4 right-2 px-2.5 py-0.5 rounded-full bg-secondary-container text-on-secondary shadow-md font-label-sm text-label-sm flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[13px]">warning</span>
+<span>Soal #17 • Keyakinan OCR: 62%</span>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<span class="w-8 font-headline-sm text-headline-sm text-secondary-container font-bold">17.</span>
+<!-- Ambiguous Handwriting Render: Blend of B and D with Eraser Ghosting -->
+<div class="relative flex items-center justify-center w-14 h-12 bg-white/70 rounded-lg shadow-inner overflow-hidden">
+<!-- Simulated faint graphite smudge behind -->
+<div class="absolute inset-0 bg-gradient-to-r from-transparent via-slate-400/25 to-transparent blur-[2px]"></div>
+<!-- Ambiguous letter glyph SVG rendered as genuine pencil stroke -->
+<svg class="w-10 h-10 text-slate-800" fill="none" stroke="currentColor" viewBox="0 0 100 100">
+<!-- Backbone stroke -->
+<path class="opacity-95" d="M 30 18 L 30 82" stroke-linecap="round" stroke-linejoin="round" stroke-width="7"></path>
+<!-- Top Loop (looks like B) -->
+<path class="opacity-90" d="M 30 20 C 58 18, 62 48, 30 50" fill="none" stroke-linecap="round" stroke-width="6.5"></path>
+<!-- Bottom Loop smudge & heavy D-like continuation -->
+<path class="opacity-95" d="M 30 50 C 65 48, 70 82, 30 82" fill="none" stroke-linecap="round" stroke-width="6.5"></path>
+<!-- Erased loop ghost -->
+<path class="opacity-35 text-slate-500" d="M 30 22 C 75 22, 75 78, 30 80" stroke-dasharray="4 3" stroke-linecap="round" stroke-width="3"></path>
+</svg>
+</div>
+<div class="flex flex-col">
+<span class="font-code-sm text-code-sm text-secondary font-semibold">[ B / D ? ]</span>
+<span class="text-[11px] text-outline">Bekas hapusan pensil terdeteksi</span>
+</div>
+</div>
+<div class="px-2 py-1 rounded bg-secondary-fixed text-on-secondary-fixed-variant font-code-sm text-code-sm">
+                      Perlu Keputusan
+                    </div>
+</div>
+</div>
+<!-- Soal 18 (Clear Confirmed) -->
+<div class="relative flex items-center justify-between py-1 group">
+<div class="flex items-center gap-3">
+<span class="w-8 font-semibold text-outline">18.</span>
+<span class="px-2 py-0.5 rounded font-display text-[22px] tracking-widest text-[#1E293B]">A</span>
+</div>
+<div class="flex items-center gap-1.5 opacity-60 group-hover:opacity-100 transition-opacity">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+<span class="font-code-sm text-code-sm text-outline">Pasti (99%)</span>
+</div>
+</div>
+<!-- Soal 19 (Context Preview) -->
+<div class="relative flex items-center justify-between py-1 opacity-70 group">
+<div class="flex items-center gap-3">
+<span class="w-8 font-semibold text-outline">19.</span>
+<span class="px-2 py-0.5 rounded font-display text-[22px] tracking-widest text-[#1E293B]">E</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+<span class="font-code-sm text-code-sm text-outline">Pasti (91%)</span>
+</div>
+</div>
+</div>
+<!-- Bottom Optical Alignment Marks -->
+<div class="absolute bottom-3 left-4 right-4 flex justify-between items-center px-4 pt-2">
+<div class="w-3.5 h-3.5 bg-black"></div>
+<div class="font-code-sm text-[10px] text-outline tracking-widest uppercase">SmartCorrect™ OMR-Fiducial Grid #0492-A</div>
+<div class="w-3.5 h-3.5 bg-black"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Left Panel Footer: Contextual Helper -->
+<div class="px-space-md py-2.5 bg-inverse-surface border-t-0 flex items-center justify-between text-inverse-on-surface">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px] text-secondary-container">drag_pan</span>
+<span class="font-code-sm text-code-sm text-slate-300">Gunakan scroll mouse untuk zoom, drag untuk memposisikan kanvas</span>
+</div>
+<span class="font-code-sm text-code-sm text-slate-400">Lembar Jawaban Asli: #SCAN_PAS_2024_0819.tiff</span>
+</div>
+</div>
+<!-- RIGHT PANEL: Human-in-the-Loop Decision & Override Panel (45% / 5 cols) -->
+<div class="lg:col-span-5 flex flex-col h-full bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden justify-between">
+<div class="p-space-lg flex flex-col gap-space-md overflow-y-auto">
+<!-- Student & Exam Header Micro-Card -->
+<div class="p-space-md rounded-xl bg-surface-container-low flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="relative">
+<img class="w-11 h-11 rounded-full object-cover shadow-sm ring-2 ring-white" data-alt="Close up portrait photograph of an Indonesian male high school student Ahmad Fauzi smiling warmly wearing a white high school uniform shirt, clean educational lighting, sharp focus, clean background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDGadDxlZ55YVv2mZe33PlpH6_7lv6UYZ3wodGBW04me4FWSI0ROceYPrhkvV2FhOCAh1H5YLe0uuqQinEjUBqJovC1A_RH6ijuj4hxIgL-PXpyN8D2Qrx5vArxSGEvNiWxPKdhRDQj2IjNm9D_nQLL-WWZlxb3tQmvfRTTha9PQXgy6it56jttrqnXh0qF9m3g_e_aImsagz4IraTNSIWB_E8YzrnCIc1JEAh7a-c">
+<span class="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-emerald-500 ring-2 ring-white"></span>
+</div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-2">
+<span class="font-title-md text-title-md text-on-surface font-bold truncate">Ahmad Fauzi</span>
+<span class="px-2 py-0.2 rounded-full font-label-sm text-label-sm bg-surface-container-highest text-on-surface-variant">X-MIPA-1</span>
+</div>
+<span class="font-code-sm text-code-sm text-on-surface-variant truncate">NISN: 0081928312 • Pindai: 10:42 WIB</span>
+</div>
+</div>
+<div class="text-right">
+<span class="font-label-sm text-label-sm text-outline block uppercase tracking-wider">Ujian</span>
+<span class="font-title-sm text-title-sm text-primary font-semibold">PAS MTK X</span>
+</div>
+</div>
+<!-- Question Analysis Card -->
+<div class="flex flex-col gap-2">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="flex items-center justify-center w-6 h-6 rounded-md bg-primary-container text-on-primary font-title-sm text-title-sm font-bold">17</span>
+<span class="font-title-md text-title-md text-on-surface font-semibold">Pemeriksaan Soal Nomor 17</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="px-2 py-0.5 rounded-full bg-primary-fixed text-on-primary-fixed-variant font-code-sm text-code-sm font-semibold">Kunci Resmi: C</span>
+<span class="px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant font-code-sm text-code-sm">Bobot: 2.5 Poin</span>
+</div>
+</div>
+<!-- AI Detection Breakdown Alert Box -->
+<div class="p-space-md rounded-xl bg-tertiary-fixed/40 text-on-tertiary-fixed-variant flex flex-col gap-1.5 shadow-sm">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2 font-title-sm text-title-sm text-tertiary font-bold">
+<span class="material-symbols-outlined text-[18px]">psychology</span>
+<span>Prediksi AI: Huruf "B"</span>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-tertiary-container text-on-tertiary font-code-sm text-code-sm font-bold">
+                  Keyakinan 62% (Ambang: 80%)
+                </span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface leading-snug">
+<strong class="font-semibold text-tertiary">Diagnosa Visi:</strong> Guratan pensil ambigu dengan bekas penghapus tebal di sisi kanan menyerupai huruf D. Kemungkinan siswa mengubah jawaban dari B ke C atau D.
+              </p>
+</div>
+</div>
+<!-- Interactive One-Click Override Controller -->
+<div class="flex flex-col gap-2.5">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-outline">Pilih Jawaban Siswa yang Sebenarnya:</span>
+<span class="font-code-sm text-[11px] text-primary">Klik opsi atau tekan 1-5</span>
+</div>
+<!-- Grid of 5 Decision Buttons -->
+<div class="grid grid-cols-5 gap-2" id="override-options-grid">
+<!-- Option A -->
+<button class="option-btn relative flex flex-col items-center justify-center p-3 h-20 rounded-xl bg-surface-container-low hover:bg-surface-container transition-all shadow-sm hover:scale-[1.02] active:scale-95" data-val="A" type="button">
+<span class="font-display text-display text-on-surface leading-none">A</span>
+<span class="font-code-sm text-[10px] text-outline mt-1">[1]</span>
+</button>
+<!-- Option B (AI Suggestion) -->
+<button class="option-btn relative flex flex-col items-center justify-center p-3 h-20 rounded-xl bg-surface-container-low hover:bg-surface-container transition-all shadow-sm hover:scale-[1.02] active:scale-95 ring-2 ring-secondary-container" data-val="B" type="button">
+<span class="font-display text-display text-on-surface leading-none">B</span>
+<span class="font-code-sm text-[10px] text-secondary font-bold mt-1">AI 62%</span>
+<span class="absolute -top-2 px-1.5 py-0.2 rounded-full bg-secondary-container text-on-secondary font-label-sm text-[9px] uppercase tracking-tighter">Saran</span>
+</button>
+<!-- Option C (Active Selected State) -->
+<button class="option-btn active-selected relative flex flex-col items-center justify-center p-3 h-20 rounded-xl bg-primary text-on-primary transition-all shadow-md scale-[1.03] ring-4 ring-primary-fixed" data-val="C" type="button">
+<span class="font-display text-display text-on-primary leading-none">C</span>
+<span class="font-code-sm text-[10px] text-primary-fixed-dim mt-1">[3] Terpilih</span>
+<span class="absolute -top-2 -right-1 flex items-center justify-center w-5 h-5 rounded-full bg-emerald-500 text-white shadow">
+<span class="material-symbols-outlined text-[13px] font-bold">check</span>
+</span>
+</button>
+<!-- Option D -->
+<button class="option-btn relative flex flex-col items-center justify-center p-3 h-20 rounded-xl bg-surface-container-low hover:bg-surface-container transition-all shadow-sm hover:scale-[1.02] active:scale-95" data-val="D" type="button">
+<span class="font-display text-display text-on-surface leading-none">D</span>
+<span class="font-code-sm text-[10px] text-outline mt-1">[4]</span>
+</button>
+<!-- Option Kosong / Coret -->
+<button class="option-btn relative flex flex-col items-center justify-center p-2 h-20 rounded-xl bg-surface-container-low hover:bg-surface-container text-error transition-all shadow-sm hover:scale-[1.02] active:scale-95" data-val="VOID" type="button">
+<span class="material-symbols-outlined text-[26px]">block</span>
+<span class="font-label-sm text-[10px] uppercase font-semibold text-center leading-tight mt-0.5">Kosong / Coret</span>
+</button>
+</div>
+</div>
+<!-- Dynamic Real-Time Score Impact Preview -->
+<div class="p-space-md rounded-xl bg-surface-container-high flex flex-col gap-2">
+<div class="flex items-center justify-between text-body-sm font-body-sm">
+<span class="text-on-surface-variant flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-primary">analytics</span>
+<span>Dampak Nilai Ahmad Fauzi jika diverifikasi <strong class="text-primary font-semibold">"C" (Benar)</strong>:</span>
+</span>
+<span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-label-sm text-label-sm font-bold">+2.5 Poin</span>
+</div>
+<!-- Score Visual Progression Meter -->
+<div class="flex items-center justify-between gap-4 pt-1">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-outline">Skor Sementara</span>
+<span class="font-headline-sm text-headline-sm text-on-surface font-bold">82.5 <span class="font-body-sm text-body-sm text-outline font-normal">/ 100</span></span>
+</div>
+<div class="flex-1 flex flex-col gap-1 items-center px-2">
+<div class="flex items-center justify-between w-full font-code-sm text-code-sm text-outline">
+<span>33/40 Benar</span>
+<span class="text-primary font-semibold">➔ 34/40 Benar</span>
+</div>
+<div class="w-full bg-surface-container-highest rounded-full h-2 overflow-hidden flex">
+<div class="bg-primary h-full transition-all duration-300" style="width: 82.5%;"></div>
+<div class="bg-emerald-500 h-full animate-pulse transition-all duration-300" style="width: 2.5%;"></div>
+</div>
+</div>
+<div class="flex flex-col text-right">
+<span class="font-label-sm text-label-sm text-outline">Skor Baru Terhitung</span>
+<span class="font-headline-sm text-headline-sm text-primary font-bold">85.0 <span class="font-body-sm text-body-sm text-outline font-normal">/ 100</span></span>
+</div>
+</div>
+</div>
+</div>
+<!-- Sticky Footer Decision Actions -->
+<div class="p-space-lg bg-surface-container-lowest shadow-md flex flex-col gap-2.5">
+<div class="grid grid-cols-1 md:grid-cols-12 gap-space-sm">
+<!-- Reject / Mark Incorrect Button -->
+<button class="md:col-span-4 px-3 py-2.5 rounded-lg bg-surface-container hover:bg-error-container text-error hover:text-on-error-container font-title-sm text-title-sm transition-colors flex items-center justify-center gap-1.5 shadow-sm active:scale-95" type="button">
+<span class="material-symbols-outlined text-[18px]">close</span>
+<span>Tandai Salah (0 P)</span>
+</button>
+<!-- Confirm & Advance Button -->
+<button class="md:col-span-8 px-4 py-2.5 rounded-lg bg-primary-container hover:bg-primary text-on-primary font-title-sm text-title-sm font-semibold transition-all flex items-center justify-center gap-2 shadow-md hover:shadow-lg active:scale-95" id="btn-confirm-next" type="button">
+<span class="material-symbols-outlined text-[20px]">check_circle</span>
+<span>Konfirmasi Jawaban &amp; Lanjut (2/4)</span>
+<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+</div>
+<!-- Keyboard Shortcut Accelerator Hint Bar -->
+<div class="flex items-center justify-center gap-2 pt-1 font-code-sm text-[11px] text-outline flex-wrap text-center">
+<span class="material-symbols-outlined text-[14px]">keyboard</span>
+<span>Navigasi Kilat:</span>
+<kbd class="px-1.5 py-0.5 rounded bg-surface-container-highest text-on-surface text-[10px]">1=A</kbd>
+<kbd class="px-1.5 py-0.5 rounded bg-surface-container-highest text-on-surface text-[10px]">2=B</kbd>
+<kbd class="px-1.5 py-0.5 rounded bg-surface-container-highest text-on-surface text-[10px]">3=C</kbd>
+<kbd class="px-1.5 py-0.5 rounded bg-surface-container-highest text-on-surface text-[10px]">4=D</kbd>
+<kbd class="px-1.5 py-0.5 rounded bg-surface-container-highest text-on-surface text-[10px]">Space=Konfirmasi</kbd>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<script>
+  (function initVerificationQueue() {
+    let currentZoom = 1;
+    let currentRotation = 0;
+    let isHighContrast = false;
+
+    const paper = document.getElementById('paper-transform-layer');
+    const zoomInBtn = document.getElementById('btn-zoom-in');
+    const zoomOutBtn = document.getElementById('btn-zoom-out');
+    const zoomResetBtn = document.getElementById('btn-zoom-reset');
+    const rotateBtn = document.getElementById('btn-rotate');
+    const contrastBtn = document.getElementById('btn-high-contrast');
+    const fitBtn = document.getElementById('btn-fit');
+    const confirmNextBtn = document.getElementById('btn-confirm-next');
+    const optionBtns = document.querySelectorAll('.option-btn');
+
+    function applyTransforms() {
+      if (!paper) return;
+      paper.style.transform = `scale(${currentZoom}) rotate(${currentRotation}deg)`;
+      if (zoomResetBtn) {
+        zoomResetBtn.textContent = `${Math.round(currentZoom * 100)}%`;
+      }
+    }
+
+    if (zoomInBtn) {
+      zoomInBtn.addEventListener('click', () => {
+        if (currentZoom < 2.2) {
+          currentZoom += 0.2;
+          applyTransforms();
+        }
+      });
+    }
+
+    if (zoomOutBtn) {
+      zoomOutBtn.addEventListener('click', () => {
+        if (currentZoom > 0.6) {
+          currentZoom -= 0.2;
+          applyTransforms();
+        }
+      });
+    }
+
+    if (zoomResetBtn) {
+      zoomResetBtn.addEventListener('click', () => {
+        currentZoom = 1;
+        applyTransforms();
+      });
+    }
+
+    if (rotateBtn) {
+      rotateBtn.addEventListener('click', () => {
+        currentRotation = (currentRotation + 90) % 360;
+        applyTransforms();
+      });
+    }
+
+    if (contrastBtn) {
+      contrastBtn.addEventListener('click', () => {
+        isHighContrast = !isHighContrast;
+        if (isHighContrast) {
+          paper.style.filter = 'contrast(220%) grayscale(100%) brightness(95%)';
+          contrastBtn.classList.add('bg-primary-container', 'text-on-primary');
+        } else {
+          paper.style.filter = 'none';
+          contrastBtn.classList.remove('bg-primary-container', 'text-on-primary');
+        }
+      });
+    }
+
+    if (fitBtn) {
+      fitBtn.addEventListener('click', () => {
+        currentZoom = 1;
+        currentRotation = 0;
+        isHighContrast = false;
+        paper.style.filter = 'none';
+        contrastBtn.classList.remove('bg-primary-container', 'text-on-primary');
+        applyTransforms();
+      });
+    }
+
+    // Toggle selected option logic
+    optionBtns.forEach((btn, index) => {
+      btn.addEventListener('click', () => {
+        optionBtns.forEach(b => {
+          b.classList.remove('active-selected', 'bg-primary', 'text-on-primary', 'scale-[1.03]', 'ring-4', 'ring-primary-fixed');
+          b.classList.add('bg-surface-container-low');
+          const checkPill = b.querySelector('.absolute.-top-2.-right-1');
+          if (checkPill) checkPill.remove();
+        });
+
+        btn.classList.remove('bg-surface-container-low');
+        btn.classList.add('active-selected', 'bg-primary', 'text-on-primary', 'scale-[1.03]', 'ring-4', 'ring-primary-fixed');
+
+        // Append check icon badge
+        const badge = document.createElement('span');
+        badge.className = 'absolute -top-2 -right-1 flex items-center justify-center w-5 h-5 rounded-full bg-emerald-500 text-white shadow';
+        badge.innerHTML = '<span class="material-symbols-outlined text-[13px] font-bold">check</span>';
+        btn.appendChild(badge);
+      });
+    });
+
+    // Keyboard Shortcuts
+    window.addEventListener('keydown', (e) => {
+      if (['1', '2', '3', '4'].includes(e.key)) {
+        const idx = parseInt(e.key, 10) - 1;
+        if (optionBtns[idx]) {
+          optionBtns[idx].click();
+        }
+      } else if (e.code === 'Space') {
+        e.preventDefault();
+        if (confirmNextBtn) {
+          confirmNextBtn.classList.add('scale-95');
+          setTimeout(() => confirmNextBtn.classList.remove('scale-95'), 150);
+          confirmNextBtn.click();
+        }
+      }
+    });
+
+    if (confirmNextBtn) {
+      confirmNextBtn.addEventListener('click', () => {
+        confirmNextBtn.innerHTML = '<span class="material-symbols-outlined text-[20px] animate-spin">refresh</span><span>Menyimpan &amp; Memuat Lembar 2...</span>';
+        setTimeout(() => {
+          confirmNextBtn.innerHTML = '<span class="material-symbols-outlined text-[20px]">check_circle</span><span>Tersimpan! Lembar 2 Siap</span>';
+        }, 600);
+      });
+    }
+  })();
+</script></main></div>
+
+</body></html>

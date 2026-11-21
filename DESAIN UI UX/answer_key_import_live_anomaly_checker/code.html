@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{"colors":{"primary":"#004ac6","surface-container":"#eaedff","surface-container-highest":"#dae2fd","tertiary-fixed":"#ffdbcd","surface-bright":"#faf8ff","secondary-fixed":"#ffdbca","on-primary-container":"#eeefff","secondary-fixed-dim":"#ffb690","inverse-surface":"#283044","on-surface-variant":"#434655","error":"#ba1a1a","primary-fixed-dim":"#b4c5ff","on-tertiary":"#ffffff","inverse-primary":"#b4c5ff","primary-container":"#2563eb","on-error":"#ffffff","surface-variant":"#dae2fd","surface":"#faf8ff","on-tertiary-fixed-variant":"#7d2d00","on-secondary-fixed-variant":"#783200","on-background":"#131b2e","secondary-container":"#fd761a","on-secondary-fixed":"#341100","surface-tint":"#0053db","on-secondary":"#ffffff","surface-container-high":"#e2e7ff","surface-container-low":"#f2f3ff","tertiary-container":"#bc4800","outline-variant":"#c3c6d7","error-container":"#ffdad6","on-tertiary-fixed":"#360f00","outline":"#737686","background":"#faf8ff","inverse-on-surface":"#eef0ff","on-tertiary-container":"#ffede6","on-primary-fixed-variant":"#003ea8","on-error-container":"#93000a","on-secondary-container":"#5c2400","surface-container-lowest":"#ffffff","on-primary":"#ffffff","on-primary-fixed":"#00174b","surface-dim":"#d2d9f4","secondary":"#9d4300","primary-fixed":"#dbe1ff","on-surface":"#131b2e","tertiary-fixed-dim":"#ffb596","tertiary":"#943700"},"borderRadius":{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},"spacing":{"gutter-mobile":"1rem","space-2xl":"3rem","space-lg":"1.5rem","space-sm":"0.5rem","space-md":"1rem","margin-mobile":"1rem","margin":"2rem","space-xs":"0.25rem","space-xl":"2rem","gutter":"1.5rem"},"fontFamily":{"code-sm":["JetBrains Mono"],"headline-lg-mobile":["Plus Jakarta Sans"],"headline-md":["Plus Jakarta Sans"],"body-md":["Plus Jakarta Sans"],"body-lg":["Plus Jakarta Sans"],"display-mobile":["Plus Jakarta Sans"],"headline-sm":["Plus Jakarta Sans"],"title-md":["Plus Jakarta Sans"],"label-md":["Plus Jakarta Sans"],"headline-lg":["Plus Jakarta Sans"],"body-sm":["Plus Jakarta Sans"],"title-sm":["Plus Jakarta Sans"],"display":["Plus Jakarta Sans"],"label-sm":["Plus Jakarta Sans"],"code-md":["JetBrains Mono"]},"fontSize":{"code-sm":["11px",{"lineHeight":"16px","letterSpacing":"0em","fontWeight":"500"}],"headline-lg-mobile":["24px",{"lineHeight":"32px","letterSpacing":"-0.015em","fontWeight":"600"}],"headline-md":["24px",{"lineHeight":"32px","letterSpacing":"-0.015em","fontWeight":"600"}],"body-md":["14px",{"lineHeight":"20px","letterSpacing":"0em","fontWeight":"400"}],"body-lg":["16px",{"lineHeight":"24px","letterSpacing":"0em","fontWeight":"400"}],"display-mobile":["28px",{"lineHeight":"36px","letterSpacing":"-0.02em","fontWeight":"700"}],"headline-sm":["20px",{"lineHeight":"28px","letterSpacing":"-0.01em","fontWeight":"600"}],"title-md":["16px",{"lineHeight":"24px","letterSpacing":"-0.005em","fontWeight":"600"}],"label-md":["12px",{"lineHeight":"16px","letterSpacing":"0.02em","fontWeight":"600"}],"headline-lg":["30px",{"lineHeight":"38px","letterSpacing":"-0.02em","fontWeight":"700"}],"body-sm":["13px",{"lineHeight":"18px","letterSpacing":"0em","fontWeight":"400"}],"title-sm":["14px",{"lineHeight":"20px","letterSpacing":"0em","fontWeight":"600"}],"display":["36px",{"lineHeight":"44px","letterSpacing":"-0.025em","fontWeight":"700"}],"label-sm":["11px",{"lineHeight":"14px","letterSpacing":"0.04em","fontWeight":"600"}],"code-md":["13px",{"lineHeight":"18px","letterSpacing":"-0.01em","fontWeight":"500"}]}}}};</script></head><body class="bg-surface font-body-md text-on-surface antialiased"><aside class="fixed left-0 top-0 h-full w-[250px] bg-[#0F172A] z-50 flex flex-col justify-between select-none shadow-[0_1px_8px_rgba(0,0,0,0.12)]"><div class="flex flex-col"><div class="h-16 px-space-md flex items-center justify-between border-b border-slate-800/80"><div class="flex items-center gap-space-sm"><img alt="SmartCorrect Brand Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/ALJJyrCGm_E1sXQIZLFlNjyq5iolMgKkpzCsJoaF-stGrZ6HSS3IL8VC8ttWf3z0ievF5MTLxMXO9qWx2KR-HZppHUb-kDQHvASn6c2vldejHtepk2jyEmd6uDDoqwLOq2R8AMnICUg02_ChNyGo1Xdd9HVaVLcP1UVSKVUXbEDOGA4wuq6e4pmcmEHGz5YRumzsYY_KShLWOv-fEDA_F8dsinyo2_btMIrxR_QxlDJZX0o"/><div class="flex flex-col"><span class="font-title-sm text-white tracking-tight leading-none">SmartCorrect</span><span class="font-code-sm text-[10px] text-slate-400 leading-tight uppercase tracking-wider mt-1">Koreksi &amp; Psikometri</span></div></div></div><div class="px-space-sm py-space-sm"><div class="px-space-sm py-space-xs text-[11px] font-label-sm uppercase tracking-wider text-slate-400">Platform</div><nav class="flex flex-col gap-1" data-active-classes="bg-primary-container text-on-primary-container font-title-sm shadow-sm"><a class="flex items-center justify-between px-space-sm py-2 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition-colors text-body-sm font-title-sm" data-path="dashboard" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[18px] mr-2">dashboard</span><span>Dasbor</span></div></a><a class="flex items-center justify-between px-space-sm py-2 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition-colors text-body-sm font-title-sm" data-path="exams" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[18px] mr-2">description</span><span>Paket Ujian</span></div></a><a aria-current="page" class="flex items-center justify-between px-space-sm py-2 rounded-lg transition-colors bg-primary-container text-on-primary-container font-title-sm shadow-sm" data-path="answer-keys" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[18px] mr-2">key</span><span>Kunci Jawaban</span></div></a><a class="flex items-center justify-between px-space-sm py-2 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition-colors text-body-sm font-title-sm" data-path="live-scanner" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[18px] mr-2">photo_camera</span><span>Pindai Langsung</span></div></a><a class="flex items-center justify-between px-space-sm py-2 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition-colors text-body-sm font-title-sm" data-path="review-queue" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[18px] mr-2">error</span><span>Antrean Verifikasi</span></div><span class="px-2 py-0.5 rounded-full text-label-sm font-label-sm bg-secondary-container text-on-secondary">4</span></a><a class="flex items-center justify-between px-space-sm py-2 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition-colors text-body-sm font-title-sm" data-path="psychometrics" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[18px] mr-2">bar_chart</span><span>Psikometri</span></div></a><a class="flex items-center justify-between px-space-sm py-2 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition-colors text-body-sm font-title-sm" data-path="export-reports" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[18px] mr-2">download</span><span>Ekspor Laporan</span></div></a></nav><div class="mt-space-md pt-space-xs border-t border-slate-800/80"><div class="px-space-sm py-space-xs text-[11px] font-label-sm uppercase tracking-wider text-slate-400">Administrasi</div><nav class="flex flex-col gap-1 mt-1" data-active-classes="bg-primary-container text-on-primary-container font-title-sm shadow-sm"><a class="flex items-center justify-between px-space-sm py-2 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition-colors text-body-sm font-title-sm" data-path="license-and-saas" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[18px] mr-2">verified_user</span><span>Lisensi &amp; SaaS</span></div></a><a class="flex items-center justify-between px-space-sm py-2 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition-colors text-body-sm font-title-sm" data-path="system-settings" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[18px] mr-2">settings</span><span>Pengaturan Sistem</span></div></a></nav></div></div></div><div class="p-space-sm border-t border-slate-800/80 bg-slate-900/60"><div class="flex items-center justify-between p-1.5 rounded-lg hover:bg-slate-800/60 transition-colors"><div class="flex items-center gap-2 overflow-hidden"><div class="relative flex-shrink-0"><img alt="Pak Budi Profile Avatar" class="w-8 h-8 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBJUMULcPtbEG6Pyk2r0oLIo0EjpeqHQlE30JXYBWbXBeJPTkaAxLsp1rXS1XReLdI4rj7qYZTBVWPE8-NAZVEqylkYHdEJGzAPKGCRWAtMeqndygaGs64FdlcWWQWltUjNMBBBEPrCE4GMGESPnIqSLkFc_o4MCMQ6AzNo1UosTESlZnmlWA2e9hqHjv5vyg5mXwC6HU1Qpd9Imua1cZiDROCkLpk0epvqKwOlFG8"/><div class="absolute bottom-0 right-0 w-2 h-2 rounded-full bg-emerald-500 ring-2 ring-[#0F172A]"></div></div><div class="flex flex-col min-w-0"><span class="font-title-sm text-[13px] text-white truncate leading-tight">Pak Budi, S.Pd.</span><span class="font-body-sm text-[11px] text-slate-400 truncate leading-tight">Guru Matematika</span></div></div><a class="text-slate-400 hover:text-white p-1 rounded-md transition-colors" href="#" title="Logout"><span class="material-symbols-outlined text-[18px]">logout</span></a></div></div></aside><div class="pl-[250px]"><header class="fixed top-0 left-[250px] right-0 h-16 bg-surface/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 px-space-lg flex items-center justify-between border-b border-outline-variant/30"><div class="flex items-center gap-space-md"><div class="flex items-center gap-2 px-space-sm py-1.5 rounded-lg bg-surface-container hover:bg-surface-container-high transition-colors cursor-pointer"><span class="material-symbols-outlined text-primary text-[18px]">domain</span><span class="font-title-sm text-body-sm text-on-surface">SMAN 1 Bandung</span><span class="material-symbols-outlined text-on-surface-variant text-[16px]">unfold_more</span></div><div class="h-4 w-px bg-outline-variant/60"></div><nav class="flex items-center gap-1.5 text-body-sm"><span class="text-on-surface-variant">Academic Year 2024/2025</span><span class="material-symbols-outlined text-outline text-[14px]">chevron_right</span><span class="font-title-sm text-primary">Penilaian Akhir Semester</span></nav></div><div class="flex items-center gap-space-md"><div class="flex items-center gap-2 px-3 py-1 rounded-full bg-[#DBEAFE] border border-[#93C5FD]"><span class="relative flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span></span><span class="font-label-sm text-[11px] font-semibold text-[#1E40AF] tracking-wide">License: 45 Days Remaining</span></div><button class="relative p-2 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors" type="button"><span class="material-symbols-outlined text-[20px]">notifications</span><span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-error"></span></button><button class="p-2 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors" type="button"><span class="material-symbols-outlined text-[20px]">light_mode</span></button><div class="h-6 w-px bg-outline-variant/60"></div><div class="flex items-center gap-2.5 pl-1 cursor-pointer"><img alt="Profile" class="w-8 h-8 rounded-full object-cover shadow-sm" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBJUMULcPtbEG6Pyk2r0oLIo0EjpeqHQlE30JXYBWbXBeJPTkaAxLsp1rXS1XReLdI4rj7qYZTBVWPE8-NAZVEqylkYHdEJGzAPKGCRWAtMeqndygaGs64FdlcWWQWltUjNMBBBEPrCE4GMGESPnIqSLkFc_o4MCMQ6AzNo1UosTESlZnmlWA2e9hqHjv5vyg5mXwC6HU1Qpd9Imua1cZiDROCkLpk0epvqKwOlFG8"/><div class="flex flex-col text-left"><span class="font-title-sm text-[13px] text-on-surface leading-tight">Pak Budi</span><span class="font-body-sm text-[11px] text-on-surface-variant leading-tight">Evaluator</span></div><span class="material-symbols-outlined text-on-surface-variant text-[16px]">expand_more</span></div></div></header><main class="relative pt-16 bg-[#F8FAFC] min-h-screen"><div class="flex flex-col w-full">
+<div class="px-space-md sm:px-space-xl py-space-lg max-w-[1520px] mx-auto w-full space-y-space-lg">
+<!-- Section 1: Navigation & Header Area -->
+<div class="flex flex-col gap-space-md">
+<!-- Breadcrumbs -->
+<nav class="flex items-center gap-2 font-body-sm text-body-sm text-outline">
+<a class="hover:text-primary transition-colors" href="#">Ujian</a>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<a class="hover:text-primary transition-colors" href="#">Penilaian Akhir Semester Ganjil Matematika X</a>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<span class="font-title-sm text-primary">Impor &amp; Kunci Jawaban</span>
+</nav>
+<!-- Main Headline + Action Buttons -->
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-space-md">
+<div>
+<div class="flex items-center gap-3">
+<span class="px-2.5 py-0.5 rounded-full font-code-sm text-code-sm bg-primary-fixed text-on-primary-fixed uppercase tracking-wider">PAS-2025/2026</span>
+<span class="px-2.5 py-0.5 rounded-full font-label-sm text-label-sm bg-surface-container-high text-on-surface-variant">40 Butir Pilihan Ganda</span>
+</div>
+<h1 class="font-headline-md text-headline-md sm:font-headline-lg sm:text-headline-lg text-on-surface mt-1">
+            Kunci Jawaban &amp; Bobot Nilai: PAS Matematika X
+          </h1>
+<p class="font-body-md text-body-md text-on-surface-variant mt-0.5">
+            Unggah lembar master kunci, verifikasi konsistensi optik, dan validasi format sebelum sinkronisasi live scanner.
+          </p>
+</div>
+<div class="flex flex-wrap items-center gap-space-sm">
+<!-- Excel Template Download -->
+<button class="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg bg-surface-container-lowest text-on-surface shadow-sm hover:bg-surface-container hover:shadow transition-all font-title-sm text-title-sm" type="button">
+<span class="material-symbols-outlined text-emerald-600 text-[20px]">table_view</span>
+<span>Unduh Template Excel (.xlsx)</span>
+</button>
+<!-- Segmented Switcher -->
+<div class="inline-flex p-1 rounded-lg bg-surface-container-high shadow-inner">
+<button class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-surface-container-lowest text-primary font-title-sm text-title-sm shadow-sm transition-all" type="button">
+<span class="material-symbols-outlined text-[18px]">upload_file</span>
+<span>Impor Excel / CSV (Aktif)</span>
+</button>
+<button class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-on-surface-variant hover:text-on-surface font-title-sm text-title-sm transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px]">keyboard</span>
+<span>Input Manual Keyboard</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Section 2: Drag & Drop Dropzone Box (Card Surface) -->
+<div class="relative overflow-hidden rounded-xl bg-surface-container-lowest shadow-sm hover:shadow-md transition-shadow p-space-lg flex flex-col items-center justify-center text-center">
+<div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-emerald-500 via-primary to-secondary-container"></div>
+<!-- Internal Dashed Drag Frame using Tailwind helper shadow / outlines -->
+<div class="w-full py-8 px-4 rounded-xl bg-surface-container-low/60 hover:bg-surface-container transition-all flex flex-col items-center justify-center cursor-pointer group" id="dropzone">
+<div class="w-16 h-16 rounded-2xl bg-emerald-100 flex items-center justify-center mb-space-sm group-hover:scale-105 transition-transform shadow-sm">
+<span class="material-symbols-outlined text-emerald-700 text-[36px]">dataset</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-semibold max-w-xl">
+          Tarik &amp; Letakkan Berkas Kunci Jawaban Excel (.xlsx) atau CSV ke Sini
+        </h3>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-2xl mt-1.5">
+          Mendukung format kolom baku: <span class="font-code-sm text-code-sm px-1.5 py-0.5 rounded bg-surface-container text-primary font-semibold">Nomor Soal (1–40)</span>, <span class="font-code-sm text-code-sm px-1.5 py-0.5 rounded bg-surface-container text-primary font-semibold">Kunci Jawaban (A/B/C/D)</span>, <span class="font-code-sm text-code-sm px-1.5 py-0.5 rounded bg-surface-container text-primary font-semibold">Bobot Soal (default: 2.5)</span>
+</p>
+<div class="mt-space-md flex flex-wrap items-center justify-center gap-3">
+<label class="px-4 py-2 rounded-lg bg-primary-container text-on-primary font-title-sm text-title-sm cursor-pointer shadow hover:bg-primary transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">folder_open</span>
+<span>Pilih Berkas dari Komputer</span>
+<input accept=".xlsx,.csv,.xls" class="hidden" type="file"/>
+</label>
+<span class="font-body-sm text-body-sm text-outline">atau seret langsung dari File Explorer</span>
+</div>
+</div>
+<!-- Loaded File Pill Notification -->
+<div class="w-full mt-space-md flex flex-col sm:flex-row items-center justify-between gap-3 px-space-md py-2.5 rounded-lg bg-emerald-50 text-emerald-900 shadow-sm">
+<div class="flex items-center gap-2.5 text-left">
+<span class="material-symbols-outlined text-emerald-600 text-[20px] shrink-0">check_circle</span>
+<span class="font-body-sm text-body-sm">
+<span class="font-title-sm text-emerald-950 font-semibold">File terpilih:</span> Kunci_Jawaban_PAS_MTK_X_2026.xlsx <span class="font-code-sm text-[11px] text-emerald-700 bg-emerald-100/70 px-1.5 py-0.5 rounded ml-1">18.4 KB</span> — Berhasil diparsing di browser via WASM SheetJS
+          </span>
+</div>
+<div class="flex items-center gap-2 self-end sm:self-center">
+<span class="font-code-sm text-code-sm text-emerald-700">MD5: a98b2..41e</span>
+<button class="p-1 text-emerald-700 hover:text-emerald-900 rounded hover:bg-emerald-100 transition-colors" title="Muat Ulang Berkas" type="button">
+<span class="material-symbols-outlined text-[18px]">refresh</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Section 3: Live Anomaly Detection Banner (Warm Amber Alert) -->
+<div class="rounded-xl bg-amber-50 p-space-md shadow-sm transition-all duration-300" id="anomalyBanner">
+<div class="flex items-start gap-space-sm">
+<div class="w-9 h-9 rounded-lg bg-amber-100 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-amber-700 text-[22px]">warning</span>
+</div>
+<div class="flex-1">
+<div class="flex flex-wrap items-center justify-between gap-2">
+<h4 class="font-title-md text-title-md text-amber-950 font-semibold flex items-center gap-2">
+<span>⚠️ 1 Anomali Terdeteksi pada Berkas Excel!</span>
+<span class="px-2 py-0.5 rounded-full font-label-sm text-label-sm bg-amber-200 text-amber-900">Validasi OCR Gagal</span>
+</h4>
+<span class="font-code-sm text-code-sm text-amber-800">Baris Data #14 • Nilai Kolom [B]: "G"</span>
+</div>
+<p class="font-body-md text-body-md text-amber-900 mt-1">
+<strong>Soal Nomor 14</strong> terdeteksi memiliki karakter invalid <code class="font-code-sm bg-red-100 text-red-700 px-1 py-0.5 rounded">"G"</code> (opsi yang diizinkan hanya <strong>A, B, C, D</strong>). Klik sel yang bersangkutan pada tabel matriks di bawah untuk memperbaiki secara instan sebelum mengunci snapshot nilai.
+          </p>
+</div>
+<button class="px-3 py-1.5 rounded-lg bg-amber-600 hover:bg-amber-700 text-white font-title-sm text-title-sm shadow-sm shrink-0 transition-colors flex items-center gap-1" onclick="document.getElementById('question-14-card').scrollIntoView({behavior: 'smooth', block: 'center'});">
+<span>Perbaiki Sekarang</span>
+<span class="material-symbols-outlined text-[16px]">arrow_downward</span>
+</button>
+</div>
+</div>
+<!-- Section 4: Interactive Live Preview Data Grid & Summary Bar -->
+<div class="rounded-xl bg-surface-container-lowest shadow-sm p-space-lg flex flex-col gap-space-lg">
+<!-- Summary Metrics Bar -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-space-md p-space-md rounded-xl bg-surface-container-low">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">Total Soal</span>
+<div class="flex items-baseline gap-2 mt-0.5">
+<span class="font-headline-sm text-headline-sm text-on-surface font-bold">40</span>
+<span class="font-body-sm text-body-sm text-outline">Nomor urut</span>
+</div>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">Opsi Pilihan</span>
+<div class="flex items-baseline gap-2 mt-0.5">
+<span class="font-headline-sm text-headline-sm text-on-surface font-bold">A – D</span>
+<span class="font-body-sm text-body-sm text-outline">4 distractor</span>
+</div>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">Total Bobot Akumulasi</span>
+<div class="flex items-baseline gap-2 mt-0.5">
+<span class="font-headline-sm text-headline-sm text-primary font-bold">100.0</span>
+<span class="font-body-sm text-body-sm text-outline">Poin Sempurna</span>
+</div>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">Status Validasi</span>
+<div class="flex items-center gap-2 mt-1">
+<span class="px-2.5 py-0.5 rounded-full font-label-sm text-label-sm bg-emerald-100 text-emerald-800" id="validPill">39 Valid</span>
+<span class="px-2.5 py-0.5 rounded-full font-label-sm text-label-sm bg-red-100 text-red-800 animate-pulse" id="reviewPill">1 Butuh Koreksi</span>
+</div>
+</div>
+</div>
+<!-- Quick Instruction -->
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">grid_view</span>
+<h3 class="font-title-md text-title-md text-on-surface font-semibold">Matriks Kunci Jawaban (4 Blok × 10 Soal)</h3>
+</div>
+<div class="flex items-center gap-3 font-body-sm text-body-sm text-on-surface-variant">
+<span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-surface-container-high"></span> Normal</span>
+<span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-red-200"></span> Anomali Invalid</span>
+<span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-emerald-200"></span> Terkoreksi</span>
+</div>
+</div>
+<!-- 4 Columns of 10 Questions Matrix -->
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-space-md">
+<!-- Column 1: Soal 1 - 10 -->
+<div class="flex flex-col gap-2 rounded-xl bg-surface-container-low p-space-sm">
+<div class="px-3 py-1.5 rounded-lg bg-surface-container font-title-sm text-title-sm text-on-surface flex justify-between items-center">
+<span>Blok 1 (Soal 01–10)</span>
+<span class="font-code-sm text-code-sm text-primary">25.0 Poin</span>
+</div>
+<!-- Items 1..10 -->
+<div class="flex items-center justify-between px-3 py-2 rounded-lg bg-surface-container-lowest shadow-sm hover:shadow transition-shadow">
+<span class="font-code-sm text-code-sm font-semibold text-outline">#01</span>
+<span class="w-7 h-7 rounded-full bg-primary-fixed text-on-primary-fixed font-title-sm text-title-sm flex items-center justify-center">A</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">2.5 pt</span>
+</div>
+<div class="flex items-center justify-between px-3 py-2 rounded-lg bg-surface-container-lowest shadow-sm hover:shadow transition-shadow">
+<span class="font-code-sm text-code-sm font-semibold text-outline">#02</span>
+<span class="w-7 h-7 rounded-full bg-primary-fixed text-on-primary-fixed font-title-sm text-title-sm flex items-center justify-center">C</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">2.5 pt</span>
+</div>
+<div class="flex items-center justify-between px-3 py-2 rounded-lg bg-surface-container-lowest shadow-sm hover:shadow transition-shadow">
+<span class="font-code-sm text-code-sm font-semibold text-outline">#03</span>
+<span class="w-7 h-7 rounded-full bg-primary-fixed text-on-primary-fixed font-title-sm text-title-sm flex items-center justify-center">B</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">2.5 pt</span>
+</div>
+<div class="flex items-center justify-between px-3 py-2 rounded-lg bg-surface-container-lowest shadow-sm hover:shadow transition-shadow">
+<span class="font-code-sm text-code-sm font-semibold text-outline">#04</span>
+<span class="w-7 h-7 rounded-full bg-primary-fixed text-on-primary-fixed font-title-sm text-title-sm flex items-center justify-center">D</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">2.5 pt</span>
+</div>
+<div class="flex items-center justify-between px-3 py-2 rounded-lg bg-surface-container-lowest shadow-sm hover:shadow transition-shadow">
+<span class="font-code-sm text-code-sm font-semibold text-outline">#05</span>
+<span class="w-7 h-7 rounded-full bg-primary-fixed text-on-primary-fixed font-title-sm text-title-sm flex items-center justify-center">A</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">2.5 pt</span>
+</div>
+<div class="flex items-center justify-between px-3 py-2 rounded-lg bg-surface-container-lowest shadow-sm hover:shadow transition-shadow">
+<span class="font-code-sm text-code-sm font-semibold text-outline">#06</span>
+<span class="w-7 h-7 rounded-full bg-primary-fixed text-on-primary-fixed font-title-sm text-title-sm flex items-center justify-center">B</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">2.5 pt</span>
+</div>
+<div class="flex items-center justify-between px-3 py-2 rounded-lg bg-surface-container-lowest shadow-sm hover:shadow transition-shadow">
+<span class="font-code-sm text-code-sm font-semibold text-outline">#07</span>
+<span class="w-7 h-7 rounded-full bg-primary-fixed text-on-primary-fixed font-title-sm text-title-sm flex items-center justify-center">C</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">2.5 pt</span>
+</div>
+<div class="flex items-center justify-between px-3 py-2 rounded-lg bg-surface-container-lowest shadow-sm hover:shadow transition-shadow">
+<span class="font-code-sm text-code-sm font-semibold text-outline">#08</span>
+<span class="w-7 h-7 rounded-full bg-primary-fixed text-on-primary-fixed font-title-sm text-title-sm flex items-center justify-center">D</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">2.5 pt</span>
+</div>
+<div class="flex items-center justify-between px-3 py-2 rounded-lg bg-surface-container-lowest shadow-sm hover:shadow transition-shadow">
+<span class="font-code-sm text-code-sm font-semibold text-outline">#09</span>
+<span class="w-7 h-7 rounded-full bg-primary-fixed text-on-primary-fixed font-title-sm text-title-sm flex items-center justify-center">A</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">2.5 pt</span>
+</div>
+<div class="flex items-center justify-between px-3 py-2 rounded-lg bg-surface-container-lowest shadow-sm hover:shadow transition-shadow">
+<span class="font-code-sm text-code-sm font-semibold text-outline">#10</span>
+<span class="w-7 h-7 rounded-full bg-primary-fixed text-on-primary-fixed font-title-sm text-title-sm flex items-center justify-center">B</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">2.5 pt</span>
+</div>
+</div>
+<!-- Column 2: Soal 11 - 20 (CONTAINS THE ANOMALY AT #14) -->
+<div class="flex flex-col gap-2 rounded-xl bg-surface-container-low p-space-sm relative">
+<div class="px-3 py-1.5 rounded-lg bg-surface-container font-title-sm text-title-sm text-on-surface flex justify-between items-center">
+<span>Blok 2 (Soal 11–20)</span>
+<span class="font-code-sm text-code-sm text-secondary font-bold">1 Isu Terdeteksi</span>
+</div>
+<div class="flex items-center justify-between px-3 py-2 rounded-lg bg-surface-container-lowest shadow-sm hover:shadow transition-shadow">
+<span class="font-code-sm text-code-sm font-semibold text-outline">#11</span>
+<span class="w-7 h-7 rounded-full bg-primary-fixed text-on-primary-fixed font-title-sm text-title-sm flex items-center justify-center">D</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">2.5 pt</span>
+</div>
+<div class="flex items-center justify-between px-3 py-2 rounded-lg bg-surface-container-lowest shadow-sm hover:shadow transition-shadow">
+<span class="font-code-sm text-code-sm font-semibold text-outline">#12</span>
+<span class="w-7 h-7 rounded-full bg-primary-fixed text-on-primary-fixed font-title-sm text-title-sm flex items-center justify-center">C</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">2.5 pt</span>
+</div>
+<div class="flex items-center justify-between px-3 py-2 rounded-lg bg-surface-container-lowest shadow-sm hover:shadow transition-shadow">
+<span class="font-code-sm text-code-sm font-semibold text-outline">#13</span>
+<span class="w-7 h-7 rounded-full bg-primary-fixed text-on-primary-fixed font-title-sm text-title-sm flex items-center justify-center">A</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">2.5 pt</span>
+</div>
+<!-- QUESTION #14 WITH ANOMALY + INLINE FIX POPOVER -->
+<div class="relative z-30">
+<div class="flex items-center justify-between px-3 py-2 rounded-lg bg-red-100 text-red-950 shadow-md cursor-pointer transition-all" id="question-14-card">
+<div class="flex items-center gap-2">
+<span class="font-code-sm text-code-sm font-bold text-red-700">#14</span>
+<span class="material-symbols-outlined text-red-600 text-[18px]">error</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-7 h-7 rounded-full bg-red-600 text-white font-title-sm text-title-sm font-bold flex items-center justify-center animate-bounce" id="key-14-display">
+                  G
+                </span>
+<span class="px-2 py-0.5 rounded-full font-label-sm text-label-sm bg-red-200 text-red-800" id="badge-14">
+                  Invalid: "G"
+                </span>
+</div>
+<span class="font-code-sm text-code-sm text-red-800 font-semibold">2.5 pt</span>
+</div>
+<!-- Interactive Popover for Question #14 -->
+<div class="absolute left-0 right-0 -top-28 sm:-top-24 rounded-xl bg-surface-container-lowest shadow-2xl p-3 z-40 transform -translate-y-2" id="popover-14">
+<div class="flex items-center justify-between pb-1.5 mb-2">
+<span class="font-title-sm text-title-sm text-on-surface font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-primary text-[16px]">edit_note</span>
+                  Koreksi Cepat Soal #14:
+                </span>
+<span class="font-code-sm text-code-sm text-outline">Pilih Opsi Sah</span>
+</div>
+<div class="grid grid-cols-4 gap-1.5">
+<button class="py-1.5 rounded-md bg-surface-container hover:bg-primary hover:text-white text-on-surface font-title-sm text-title-sm transition-all text-center" onclick="correctKey('A')" type="button">
+                  A
+                </button>
+<button class="py-1.5 rounded-md bg-surface-container hover:bg-primary hover:text-white text-on-surface font-title-sm text-title-sm transition-all text-center" onclick="correctKey('B')" type="button">
+                  B
+                </button>
+<button class="relative py-1.5 rounded-md bg-primary-container text-on-primary font-title-sm text-title-sm font-bold shadow-md hover:scale-105 transition-all text-center flex flex-col items-center justify-center" onclick="correctKey('C')" type="button">
+<span>C</span>
+<span class="text-[9px] uppercase tracking-tighter opacity-90">Kunci Asli</span>
+</button>
+<button class="py-1.5 rounded-md bg-surface-container hover:bg-primary hover:text-white text-on-surface font-title-sm text-title-sm transition-all text-center" onclick="correctKey('D')" type="button">
+                  D
+                </button>
+</div>
+<!-- Tooltip Tail -->
+<div class="absolute -bottom-2 left-8 w-4 h-4 bg-surface-container-lowest transform rotate-45"></div>
+</div>
+</div>
+<div class="flex items-center justify-between px-3 py-2 rounded-lg bg-surface-container-lowest shadow-sm hover:shadow transition-shadow">
+<span class="font-code-sm text-code-sm font-semibold text-outline">#15</span>
+<span class="w-7 h-7 rounded-full bg-primary-fixed text-on-primary-fixed font-title-sm text-title-sm flex items-center justify-center">B</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">2.5 pt</span>
+</div>
+<div class="flex items-center justify-between px-3 py-2 rounded-lg bg-surface-container-lowest shadow-sm hover:shadow transition-shadow">
+<span class="font-code-sm text-code-sm font-semibold text-outline">#16</span>
+<span class="w-7 h-7 rounded-full bg-primary-fixed text-on-primary-fixed font-title-sm text-title-sm flex items-center justify-center">C</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">2.5 pt</span>
+</div>
+<div class="flex items-center justify-between px-3 py-2 rounded-lg bg-surface-container-lowest shadow-sm hover:shadow transition-shadow">
+<span class="font-code-sm text-code-sm font-semibold text-outline">#17</span>
+<span class="w-7 h-7 rounded-full bg-primary-fixed text-on-primary-fixed font-title-sm text-title-sm flex items-center justify-center">A</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">2.5 pt</span>
+</div>
+<div class="flex items-center justify-between px-3 py-2 rounded-lg bg-surface-container-lowest shadow-sm hover:shadow transition-shadow">
+<span class="font-code-sm text-code-sm font-semibold text-outline">#18</span>
+<span class="w-7 h-7 rounded-full bg-primary-fixed text-on-primary-fixed font-title-sm text-title-sm flex items-center justify-center">D</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">2.5 pt</span>
+</div>
+<div class="flex items-center justify-between px-3 py-2 rounded-lg bg-surface-container-lowest shadow-sm hover:shadow transition-shadow">
+<span class="font-code-sm text-code-sm font-semibold text-outline">#19</span>
+<span class="w-7 h-7 rounded-full bg-primary-fixed text-on-primary-fixed font-title-sm text-title-sm flex items-center justify-center">A</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">2.5 pt</span>
+</div>
+<div class="flex items-center justify-between px-3 py-2 rounded-lg bg-surface-container-lowest shadow-sm hover:shadow transition-shadow">
+<span class="font-code-sm text-code-sm font-semibold text-outline">#20</span>
+<span class="w-7 h-7 rounded-full bg-primary-fixed text-on-primary-fixed font-title-sm text-title-sm flex items-center justify-center">B</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">2.5 pt</span>
+</div>
+</div>
+<!-- Column 3: Soal 21 - 30 -->
+<div class="flex flex-col gap-2 rounded-xl bg-surface-container-low p-space-sm">
+<div class="px-3 py-1.5 rounded-lg bg-surface-container font-title-sm text-title-sm text-on-surface flex justify-between items-center">
+<span>Blok 3 (Soal 21–30)</span>
+<span class="font-code-sm text-code-sm text-primary">25.0 Poin</span>
+</div>
+<div class="flex items-center justify-between px-3 py-2 rounded-lg bg-surface-container-lowest shadow-sm hover:shadow transition-shadow">
+<span class="font-code-sm text-code-sm font-semibold text-outline">#21</span>
+<span class="w-7 h-7 rounded-full bg-primary-fixed text-on-primary-fixed font-title-sm text-title-sm flex items-center justify-center">C</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">2.5 pt</span>
+</div>
+<div class="flex items-center justify-between px-3 py-2 rounded-lg bg-surface-container-lowest shadow-sm hover:shadow transition-shadow">
+<span class="font-code-sm text-code-sm font-semibold text-outline">#22</span>
+<span class="w-7 h-7 rounded-full bg-primary-fixed text-on-primary-fixed font-title-sm text-title-sm flex items-center justify-center">B</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">2.5 pt</span>
+</div>
+<div class="flex items-center justify-between px-3 py-2 rounded-lg bg-surface-container-lowest shadow-sm hover:shadow transition-shadow">
+<span class="font-code-sm text-code-sm font-semibold text-outline">#23</span>
+<span class="w-7 h-7 rounded-full bg-primary-fixed text-on-primary-fixed font-title-sm text-title-sm flex items-center justify-center">D</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">2.5 pt</span>
+</div>
+<div class="flex items-center justify-between px-3 py-2 rounded-lg bg-surface-container-lowest shadow-sm hover:shadow transition-shadow">
+<span class="font-code-sm text-code-sm font-semibold text-outline">#24</span>
+<span class="w-7 h-7 rounded-full bg-primary-fixed text-on-primary-fixed font-title-sm text-title-sm flex items-center justify-center">A</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">2.5 pt</span>
+</div>
+<div class="flex items-center justify-between px-3 py-2 rounded-lg bg-surface-container-lowest shadow-sm hover:shadow transition-shadow">
+<span class="font-code-sm text-code-sm font-semibold text-outline">#25</span>
+<span class="w-7 h-7 rounded-full bg-primary-fixed text-on-primary-fixed font-title-sm text-title-sm flex items-center justify-center">C</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">2.5 pt</span>
+</div>
+<div class="flex items-center justify-between px-3 py-2 rounded-lg bg-surface-container-lowest shadow-sm hover:shadow transition-shadow">
+<span class="font-code-sm text-code-sm font-semibold text-outline">#26</span>
+<span class="w-7 h-7 rounded-full bg-primary-fixed text-on-primary-fixed font-title-sm text-title-sm flex items-center justify-center">A</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">2.5 pt</span>
+</div>
+<div class="flex items-center justify-between px-3 py-2 rounded-lg bg-surface-container-lowest shadow-sm hover:shadow transition-shadow">
+<span class="font-code-sm text-code-sm font-semibold text-outline">#27</span>
+<span class="w-7 h-7 rounded-full bg-primary-fixed text-on-primary-fixed font-title-sm text-title-sm flex items-center justify-center">D</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">2.5 pt</span>
+</div>
+<div class="flex items-center justify-between px-3 py-2 rounded-lg bg-surface-container-lowest shadow-sm hover:shadow transition-shadow">
+<span class="font-code-sm text-code-sm font-semibold text-outline">#28</span>
+<span class="w-7 h-7 rounded-full bg-primary-fixed text-on-primary-fixed font-title-sm text-title-sm flex items-center justify-center">B</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">2.5 pt</span>
+</div>
+<div class="flex items-center justify-between px-3 py-2 rounded-lg bg-surface-container-lowest shadow-sm hover:shadow transition-shadow">
+<span class="font-code-sm text-code-sm font-semibold text-outline">#29</span>
+<span class="w-7 h-7 rounded-full bg-primary-fixed text-on-primary-fixed font-title-sm text-title-sm flex items-center justify-center">C</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">2.5 pt</span>
+</div>
+<div class="flex items-center justify-between px-3 py-2 rounded-lg bg-surface-container-lowest shadow-sm hover:shadow transition-shadow">
+<span class="font-code-sm text-code-sm font-semibold text-outline">#30</span>
+<span class="w-7 h-7 rounded-full bg-primary-fixed text-on-primary-fixed font-title-sm text-title-sm flex items-center justify-center">A</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">2.5 pt</span>
+</div>
+</div>
+<!-- Column 4: Soal 31 - 40 -->
+<div class="flex flex-col gap-2 rounded-xl bg-surface-container-low p-space-sm">
+<div class="px-3 py-1.5 rounded-lg bg-surface-container font-title-sm text-title-sm text-on-surface flex justify-between items-center">
+<span>Blok 4 (Soal 31–40)</span>
+<span class="font-code-sm text-code-sm text-primary">25.0 Poin</span>
+</div>
+<div class="flex items-center justify-between px-3 py-2 rounded-lg bg-surface-container-lowest shadow-sm hover:shadow transition-shadow">
+<span class="font-code-sm text-code-sm font-semibold text-outline">#31</span>
+<span class="w-7 h-7 rounded-full bg-primary-fixed text-on-primary-fixed font-title-sm text-title-sm flex items-center justify-center">B</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">2.5 pt</span>
+</div>
+<div class="flex items-center justify-between px-3 py-2 rounded-lg bg-surface-container-lowest shadow-sm hover:shadow transition-shadow">
+<span class="font-code-sm text-code-sm font-semibold text-outline">#32</span>
+<span class="w-7 h-7 rounded-full bg-primary-fixed text-on-primary-fixed font-title-sm text-title-sm flex items-center justify-center">D</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">2.5 pt</span>
+</div>
+<div class="flex items-center justify-between px-3 py-2 rounded-lg bg-surface-container-lowest shadow-sm hover:shadow transition-shadow">
+<span class="font-code-sm text-code-sm font-semibold text-outline">#33</span>
+<span class="w-7 h-7 rounded-full bg-primary-fixed text-on-primary-fixed font-title-sm text-title-sm flex items-center justify-center">C</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">2.5 pt</span>
+</div>
+<div class="flex items-center justify-between px-3 py-2 rounded-lg bg-surface-container-lowest shadow-sm hover:shadow transition-shadow">
+<span class="font-code-sm text-code-sm font-semibold text-outline">#34</span>
+<span class="w-7 h-7 rounded-full bg-primary-fixed text-on-primary-fixed font-title-sm text-title-sm flex items-center justify-center">A</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">2.5 pt</span>
+</div>
+<div class="flex items-center justify-between px-3 py-2 rounded-lg bg-surface-container-lowest shadow-sm hover:shadow transition-shadow">
+<span class="font-code-sm text-code-sm font-semibold text-outline">#35</span>
+<span class="w-7 h-7 rounded-full bg-primary-fixed text-on-primary-fixed font-title-sm text-title-sm flex items-center justify-center">D</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">2.5 pt</span>
+</div>
+<div class="flex items-center justify-between px-3 py-2 rounded-lg bg-surface-container-lowest shadow-sm hover:shadow transition-shadow">
+<span class="font-code-sm text-code-sm font-semibold text-outline">#36</span>
+<span class="w-7 h-7 rounded-full bg-primary-fixed text-on-primary-fixed font-title-sm text-title-sm flex items-center justify-center">C</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">2.5 pt</span>
+</div>
+<div class="flex items-center justify-between px-3 py-2 rounded-lg bg-surface-container-lowest shadow-sm hover:shadow transition-shadow">
+<span class="font-code-sm text-code-sm font-semibold text-outline">#37</span>
+<span class="w-7 h-7 rounded-full bg-primary-fixed text-on-primary-fixed font-title-sm text-title-sm flex items-center justify-center">B</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">2.5 pt</span>
+</div>
+<div class="flex items-center justify-between px-3 py-2 rounded-lg bg-surface-container-lowest shadow-sm hover:shadow transition-shadow">
+<span class="font-code-sm text-code-sm font-semibold text-outline">#38</span>
+<span class="w-7 h-7 rounded-full bg-primary-fixed text-on-primary-fixed font-title-sm text-title-sm flex items-center justify-center">A</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">2.5 pt</span>
+</div>
+<div class="flex items-center justify-between px-3 py-2 rounded-lg bg-surface-container-lowest shadow-sm hover:shadow transition-shadow">
+<span class="font-code-sm text-code-sm font-semibold text-outline">#39</span>
+<span class="w-7 h-7 rounded-full bg-primary-fixed text-on-primary-fixed font-title-sm text-title-sm flex items-center justify-center">B</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">2.5 pt</span>
+</div>
+<div class="flex items-center justify-between px-3 py-2 rounded-lg bg-surface-container-lowest shadow-sm hover:shadow transition-shadow">
+<span class="font-code-sm text-code-sm font-semibold text-outline">#40</span>
+<span class="w-7 h-7 rounded-full bg-primary-fixed text-on-primary-fixed font-title-sm text-title-sm flex items-center justify-center">D</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">2.5 pt</span>
+</div>
+</div>
+</div>
+<!-- Audit Metadata Footer -->
+<div class="flex flex-col sm:flex-row items-center justify-between pt-space-sm font-body-sm text-body-sm text-outline gap-2">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px] text-emerald-600">verified</span>
+<span>Engine Algoritma: <strong>SmartCorrect Optical Match v4.2</strong> (Toleransi ketebalan pensil: 88%)</span>
+</div>
+<div class="flex items-center gap-3">
+<span>Struktur: <strong>1 Kolom Kunci / Pilihan Tunggal</strong></span>
+<span class="text-surface-dim">•</span>
+<a class="text-primary hover:underline" href="#">Lihat Riwayat Versi Kunci</a>
+</div>
+</div>
+</div>
+<!-- Section 5: Bottom Sticky Action Bar -->
+<div class="sticky bottom-4 z-40 rounded-xl bg-surface-container-lowest shadow-2xl p-space-md flex flex-col lg:flex-row items-center justify-between gap-space-md">
+<!-- Security Notice -->
+<div class="flex items-center gap-3 text-left">
+<div class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-primary text-[22px]">lock</span>
+</div>
+<div class="flex flex-col">
+<span class="font-title-sm text-title-sm text-on-surface font-semibold flex items-center gap-1.5">
+<span>Snapshot Kunci Terkunci &amp; Immutable</span>
+<span class="px-2 py-0.5 rounded-full font-label-sm text-label-sm bg-blue-100 text-blue-800">Auto-Backup Cloud</span>
+</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-1">
+            Saat dikonfirmasi, snapshot JSON immutable disimpan ke Google Sheets agar perubahan kunci di masa depan tidak merusak riwayat penilaian.
+          </p>
+</div>
+</div>
+<!-- Final Actions -->
+<div class="flex items-center gap-space-sm shrink-0 w-full lg:w-auto justify-end">
+<button class="px-4 py-2.5 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface font-title-sm text-title-sm transition-colors" type="button">
+          Batalkan &amp; Ganti Berkas
+        </button>
+<button class="px-5 py-2.5 rounded-lg bg-primary-container hover:bg-primary text-on-primary font-title-sm text-title-sm shadow-md hover:shadow-lg transition-all flex items-center gap-2" id="lockSnapshotBtn" onclick="lockSnapshot()" type="button">
+<span class="material-symbols-outlined text-[18px]">verified_user</span>
+<span id="btnText">Konfirmasi &amp; Kunci Snapshot Jawaban (40 Soal)</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<script>
+  function correctKey(chosenKey) {
+    const card = document.getElementById('question-14-card');
+    const keyDisplay = document.getElementById('key-14-display');
+    const badge = document.getElementById('badge-14');
+    const popover = document.getElementById('popover-14');
+    const banner = document.getElementById('anomalyBanner');
+    const reviewPill = document.getElementById('reviewPill');
+    const validPill = document.getElementById('validPill');
+    const lockBtn = document.getElementById('lockSnapshotBtn');
+
+    // Update UI elements for Soal 14
+    keyDisplay.textContent = chosenKey;
+    keyDisplay.className = 'w-7 h-7 rounded-full bg-emerald-600 text-white font-title-sm text-title-sm font-bold flex items-center justify-center transition-all';
+    
+    badge.textContent = 'Terkoreksi: ' + chosenKey;
+    badge.className = 'px-2 py-0.5 rounded-full font-label-sm text-label-sm bg-emerald-100 text-emerald-800';
+
+    card.className = 'flex items-center justify-between px-3 py-2 rounded-lg bg-emerald-50 text-emerald-950 shadow-sm transition-all';
+
+    // Hide the popover smoothly
+    if (popover) {
+      popover.style.display = 'none';
+    }
+
+    // Hide or convert the top anomaly banner
+    if (banner) {
+      banner.className = 'rounded-xl bg-emerald-50 p-space-md shadow-sm transition-all duration-300';
+      banner.innerHTML = `
+        <div class="flex items-center justify-between gap-space-sm">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-lg bg-emerald-100 flex items-center justify-center shrink-0">
+              <span class="material-symbols-outlined text-emerald-700 text-[22px]">check_circle</span>
+            </div>
+            <div>
+              <h4 class="font-title-md text-title-md text-emerald-950 font-semibold">Semua 40 Soal Telah Sah dan Terverifikasi!</h4>
+              <p class="font-body-md text-body-md text-emerald-900">Anomali pada Soal #14 berhasil diperbaiki menjadi kunci "C". Kunci siap dikunci ke Google Sheets.</p>
+            </div>
+          </div>
+          <span class="px-3 py-1 rounded-full bg-emerald-200 text-emerald-900 font-label-sm text-label-sm font-bold">100% Valid</span>
+        </div>
+      `;
+    }
+
+    // Update status pills
+    if (reviewPill) reviewPill.style.display = 'none';
+    if (validPill) {
+      validPill.textContent = '40 Valid (100%)';
+      validPill.className = 'px-3 py-0.5 rounded-full font-label-sm text-label-sm bg-emerald-200 text-emerald-900 font-bold';
+    }
+
+    // Highlight the final lock button
+    if (lockBtn) {
+      lockBtn.classList.add('ring-4', 'ring-emerald-300');
+    }
+  }
+
+  function lockSnapshot() {
+    const btn = document.getElementById('lockSnapshotBtn');
+    const btnText = document.getElementById('btnText');
+    if (!btn) return;
+
+    btn.disabled = true;
+    btn.innerHTML = '<span class="material-symbols-outlined animate-spin text-[18px]">progress_activity</span><span>Menyimpan Snapshot Immutable...</span>';
+    
+    setTimeout(() => {
+      btn.className = 'px-5 py-2.5 rounded-lg bg-emerald-600 text-white font-title-sm text-title-sm shadow-md transition-all flex items-center gap-2';
+      btn.innerHTML = '<span class="material-symbols-outlined text-[18px]">lock</span><span>Snapshot Berhasil Dikunci (PAS-MTK-X)</span>';
+      alert('Snapshot Kunci Jawaban berhasil dikunci dan direplikasi ke Google Spreadsheet SMAN 1 Bandung.');
+    }, 1200);
+  }
+</script></main></div></body></html>

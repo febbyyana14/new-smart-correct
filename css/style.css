@@ -1,0 +1,171 @@
+/* ==========================================================================
+   SMARTCORRECT — MODERN CLEAN EDTECH STYLESHEET
+   Aesthetic: Card-based, clean elevation, soft hairline borders, responsive
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+:root {
+  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  
+  --primary: #2563EB;
+  --primary-hover: #1D4ED8;
+  --primary-focus: #1E40AF;
+  --accent: #F97316;
+  --accent-hover: #EA580C;
+  
+  --bg-canvas: #F8FAFC;
+  --bg-surface: #FFFFFF;
+  --bg-card: #FFFFFF;
+  --border-subtle: #E2E8F0;
+  
+  --text-main: #0F172A;
+  --text-muted: #64748B;
+  --text-faint: #94A3B8;
+  
+  --sidebar-bg: #0F172A;
+  --sidebar-active: #1E293B;
+  
+  --radius-card: 14px;
+  --radius-btn: 8px;
+  
+  --shadow-sm: 0 1px 2px 0 rgba(15, 23, 42, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.08), 0 2px 4px -2px rgba(15, 23, 42, 0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(15, 23, 42, 0.08), 0 4px 6px -4px rgba(15, 23, 42, 0.04);
+}
+
+/* Dark Mode Variables */
+.dark {
+  --bg-canvas: #0B0F19;
+  --bg-surface: #111827;
+  --bg-card: #1E293B;
+  --border-subtle: #334155;
+  
+  --text-main: #F8FAFC;
+  --text-muted: #94A3B8;
+  --text-faint: #64748B;
+  
+  --sidebar-bg: #0B0F19;
+  --sidebar-active: #1F2937;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--bg-canvas);
+  color: var(--text-main);
+  transition: background-color 0.2s ease, color 0.2s ease;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 9999px;
+}
+.dark ::-webkit-scrollbar-thumb {
+  background: #475569;
+}
+
+/* Zero-Delay View Visibility Toggle */
+.app-view {
+  display: none !important;
+  opacity: 0;
+  transition: opacity 0.15s ease-in-out;
+}
+.app-view.active {
+  display: block !important;
+  opacity: 1;
+}
+
+/* Camera Scanner Viewfinder & Corner Brackets */
+.scanner-viewport {
+  position: relative;
+  background-color: #000000;
+  overflow: hidden;
+}
+.guide-bracket {
+  position: absolute;
+  width: 32px;
+  height: 32px;
+  border-color: #FFFFFF;
+  border-style: solid;
+  pointer-events: none;
+  z-index: 20;
+}
+.bracket-tl { top: 24px; left: 24px; border-width: 4px 0 0 4px; border-top-left-radius: 8px; }
+.bracket-tr { top: 24px; right: 24px; border-width: 4px 4px 0 0; border-top-right-radius: 8px; }
+.bracket-bl { bottom: 24px; left: 24px; border-width: 0 0 4px 4px; border-bottom-left-radius: 8px; }
+.bracket-br { bottom: 24px; right: 24px; border-width: 0 4px 4px 0; border-bottom-right-radius: 8px; }
+
+/* Scanning Laser Line Animation */
+@keyframes scanLaser {
+  0% { top: 10%; opacity: 0.8; }
+  50% { top: 90%; opacity: 1; }
+  100% { top: 10%; opacity: 0.8; }
+}
+.scan-line {
+  position: absolute;
+  left: 20px;
+  right: 20px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #38BDF8, #2563EB, transparent);
+  box-shadow: 0 0 12px #38BDF8;
+  animation: scanLaser 2.8s infinite ease-in-out;
+  pointer-events: none;
+  z-index: 25;
+}
+
+/* Monospace font styling */
+.font-mono {
+  font-family: var(--font-mono);
+}
+
+/* Pulsing Badge Indicator */
+@keyframes pulseDot {
+  0% { transform: scale(0.95); opacity: 0.8; }
+  50% { transform: scale(1.15); opacity: 1; }
+  100% { transform: scale(0.95); opacity: 0.8; }
+}
+.pulse-indicator {
+  animation: pulseDot 2s infinite ease-in-out;
+}
+
+/* Anomaly Table Highlighting */
+.row-anomaly {
+  background-color: #FEF2F2 !important;
+  border-left: 4px solid #EF4444 !important;
+}
+.dark .row-anomaly {
+  background-color: rgba(239, 68, 68, 0.15) !important;
+}
+
+/* Print Media Specific Styling (Official School PDF Preview) */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #printableReportArea, #printableReportArea * {
+    visibility: visible;
+  }
+  #printableReportArea {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    margin: 0;
+    padding: 20px;
+    background: #FFFFFF !important;
+    color: #000000 !important;
+  }
+  .no-print {
+    display: none !important;
+  }
+}
