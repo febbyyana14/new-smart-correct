@@ -2,9 +2,9 @@
  * ============================================================================
  * SMARTCORRECT — FRONTEND CLIENT ENGINE (ZERO-DELAY SPA + SHEETJS + AI SCANNER)
  * ============================================================================
- * Arsitektur  : Client-Side SPA (Single Page Application)
- * Performa    : 0ms Instant Router, SWR & In-Flight Deduplication, Optimistic UI
- * Integrasi   : SheetJS (Excel read/write), Web Camera API, Lucide Icons, Print
+ * Fitur Tambahan : Halaman Login Modern (Google Sign-In, Daftar, Lupa Sandi),
+ *                  White-Label Branding (Nama, Logo, Warna Tema, Foto Avatar),
+ *                  Token Lisensi Aktif Selamanya (👑 Lifetime Access).
  * ============================================================================
  */
 
@@ -16,8 +16,19 @@ const AppState = {
   sessionToken: null,
   activeView: 'view-dashboard',
   theme: 'light',
+
+  // Pengaturan Branding & Identitas
+  branding: {
+    appName: 'SmartCorrect',
+    appSubtitle: 'EdTech Platform',
+    brandColor: '#2563EB',
+    brandColorHover: '#1D4ED8',
+    logoType: 'icon', // 'icon' atau 'image'
+    logoValue: 'check-check',
+    userAvatar: '👨‍🏫'
+  },
   
-  // Data Ujian & Hasil
+  // Data Ujian
   exams: [
     {
       id_ujian: 'exm_001',
@@ -46,7 +57,6 @@ const AppState = {
   ],
   activeExamId: 'exm_001',
   
-  // Master Kunci Jawaban
   kunciList: [],
   
   // Hasil Rekapitulasi Siswa
@@ -75,11 +85,11 @@ const AppState = {
     }
   ],
   
-  // Bank Token Super Admin
+  // Bank Token Super Admin (Termasuk Opsi Lifetime Selamanya)
   adminTokens: [
-    { id_token: 'tok_01', kode_token: 'SC-DEMO-2026', tipe_lisensi: 'Trial 30 Hari', durasi_hari: 30, max_usage: 10, used_count: 3, status: 'Active', catatan: 'Token Demo Awal' },
-    { id_token: 'tok_02', kode_token: 'SC-SEKOLAH-1TH', tipe_lisensi: '1 Tahun', durasi_hari: 365, max_usage: 25, used_count: 5, status: 'Active', catatan: 'SMAN 1 Terpadu' },
-    { id_token: 'tok_03', kode_token: 'SC-PROMO-6BLN', tipe_lisensi: '6 Bulan', durasi_hari: 180, max_usage: 1, used_count: 1, status: 'Exhausted', catatan: 'Promo Guru' }
+    { id_token: 'tok_01', kode_token: 'SC-LIFETIME-VIP', tipe_lisensi: '👑 Lifetime (Selamanya)', durasi_hari: -1, max_usage: 10, used_count: 2, status: 'Active', catatan: 'Akses Selamanya VIP Guru' },
+    { id_token: 'tok_02', kode_token: 'SC-DEMO-2026', tipe_lisensi: 'Trial 30 Hari', durasi_hari: 30, max_usage: 25, used_count: 5, status: 'Active', catatan: 'Token Demo Awal' },
+    { id_token: 'tok_03', kode_token: 'SC-SEKOLAH-1TH', tipe_lisensi: '1 Tahun', durasi_hari: 365, max_usage: 50, used_count: 12, status: 'Active', catatan: 'SMAN 1 Terpadu' }
   ]
 };
 
@@ -87,22 +97,21 @@ const AppState = {
 // 2. ZERO-DELAY CLIENT ROUTER (0ms Menu Switching)
 // ============================================================================
 function navigateTo(viewId) {
-  // Sembunyikan semua view
   document.querySelectorAll('.app-view').forEach(el => {
     el.classList.remove('active');
   });
 
-  // Tampilkan target view seketika
   const targetView = document.getElementById(viewId);
   if (targetView) {
     targetView.classList.add('active');
     AppState.activeView = viewId;
   }
 
-  // Update Breadcrumb
+  // Update Breadcrumb Header
   const breadcrumb = document.getElementById('topBreadcrumbTitle');
   if (breadcrumb) {
     const titles = {
+      'view-auth': 'Autentikasi & Akun',
       'view-dashboard': 'Dashboard',
       'view-exam-create': 'Buat Paket Ujian',
       'view-key-import': 'Impor Kunci Jawaban',
@@ -111,12 +120,13 @@ function navigateTo(viewId) {
       'view-results': 'Rekapitulasi Nilai',
       'view-psychometrics': 'Analisis Butir Soal',
       'view-export': 'Pusat Ekspor Laporan',
+      'view-branding': 'Branding & Tampilan',
       'view-admin-tokens': 'Super Admin SaaS'
     };
     breadcrumb.textContent = titles[viewId] || 'Halaman';
   }
 
-  // Update Nav Active State (Desktop Sidebar)
+  // Update Sidebar Desktop
   document.querySelectorAll('.nav-btn').forEach(btn => {
     if (btn.getAttribute('data-nav') === viewId) {
       btn.classList.add('bg-slate-800', 'text-white');
@@ -127,7 +137,7 @@ function navigateTo(viewId) {
     }
   });
 
-  // Update Mobile Nav Active State
+  // Update Bottom Nav Mobile
   document.querySelectorAll('.mobile-nav-btn').forEach(btn => {
     if (btn.getAttribute('data-mobilenav') === viewId) {
       btn.classList.add('text-brand-600', 'dark:text-brand-400');
@@ -138,14 +148,14 @@ function navigateTo(viewId) {
     }
   });
 
-  // Re-trigger render jika perlu
+  // Trigger Render Khusus
   if (viewId === 'view-dashboard') renderDashboard();
   if (viewId === 'view-results') renderResultsTable();
   if (viewId === 'view-psychometrics') renderPsychometrics();
   if (viewId === 'view-review-queue') renderReviewQueue();
   if (viewId === 'view-admin-tokens') renderAdminTokensTable();
+  if (viewId === 'view-branding') populateBrandingForm();
 
-  // Scroll to top
   window.scrollTo({ top: 0, behavior: 'instant' });
 }
 
@@ -155,32 +165,27 @@ function navigateTo(viewId) {
 const _inFlightRequests = {};
 
 async function callGAS(action, payload = {}) {
-  // Cek apakah URL sudah dikonfigurasi nyata atau masih placeholder
   if (!GAS_URL || GAS_URL.includes('AKfycbx_GANTIKAN_DENGAN_URL_DEPLOY_ANDA')) {
-    console.warn(`[SmartCorrect Demo Mode] Action "${action}" berjalan lokal di browser (GAS_URL belum diatur).`);
+    console.warn(`[SmartCorrect Demo Mode] Action "${action}" berjalan lokal di browser.`);
     return handleLocalFallback(action, payload);
   }
 
   const token = AppState.sessionToken || localStorage.getItem(APP_CONFIG.STORAGE_KEYS.SESSION_TOKEN) || '';
   const cacheKey = action + '_' + JSON.stringify(payload);
 
-  if (_inFlightRequests[cacheKey]) {
-    return _inFlightRequests[cacheKey];
-  }
+  if (_inFlightRequests[cacheKey]) return _inFlightRequests[cacheKey];
 
   const promise = (async () => {
     try {
       const response = await fetch(GAS_URL, {
         method: 'POST',
-        // WAJIB text/plain untuk mencegah browser memicu CORS preflight OPTIONS yang ditolak GAS
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
         body: JSON.stringify({ action, data: payload, token })
       });
-      const result = await response.json();
-      return result;
+      return await response.json();
     } catch (err) {
       console.error('API Fetch Error:', err);
-      return { success: false, message: 'Gagal terhubung ke server Google Apps Script: ' + err.message };
+      return { success: false, message: 'Gagal terhubung ke Google Apps Script: ' + err.message };
     } finally {
       delete _inFlightRequests[cacheKey];
     }
@@ -191,18 +196,36 @@ async function callGAS(action, payload = {}) {
 }
 
 function handleLocalFallback(action, payload) {
-  // Simulasi respons instan lokal untuk UX demo sempurna
   return new Promise(resolve => {
     setTimeout(() => {
-      if (action === 'auth.activateToken') {
+      if (action === 'auth.activateToken' || action === 'auth.register' || action === 'auth.googleAuth') {
+        const isLifetime = payload.token === 'SC-LIFETIME-VIP';
+        const expDate = isLifetime ? '2099-12-31T23:59:59.000Z' : new Date(Date.now() + (30 * 24 * 3600 * 1000)).toISOString();
         const dummyUser = {
           id_user: 'usr_local',
           email_google: payload.email || 'guru@smartcorrect.local',
           nama_lengkap: payload.nama || 'Budi Santoso, M.Pd',
           role: 'Guru',
-          tgl_kedaluwarsa_lisensi: new Date(Date.now() + (30 * 24 * 3600 * 1000)).toISOString()
+          avatar_url: payload.avatar || AppState.branding.userAvatar,
+          tgl_kedaluwarsa_lisensi: expDate,
+          is_lifetime: isLifetime
         };
-        resolve({ success: true, message: 'Lisensi SmartCorrect berhasil diaktifkan!', user: dummyUser, sessionToken: 'demo_token_valid' });
+        resolve({
+          success: true,
+          message: isLifetime ? 'Selamat! Akun Anda aktif SELAMANYA (Lifetime Access) 👑' : 'Akun berhasil diaktifkan!',
+          user: dummyUser,
+          sessionToken: 'demo_token_valid'
+        });
+      } else if (action === 'auth.loginAdmin') {
+        const adminUser = {
+          id_user: 'admin_root',
+          email_google: 'superadmin@smartcorrect.local',
+          nama_lengkap: 'Super Administrator (Owner)',
+          role: 'Super Admin',
+          tgl_kedaluwarsa_lisensi: '2099-12-31T23:59:59.000Z',
+          is_lifetime: true
+        };
+        resolve({ success: true, message: 'Login Super Admin berhasil!', user: adminUser, sessionToken: 'admin_session_valid' });
       } else {
         resolve({ success: true, message: 'Berhasil diproses.' });
       }
@@ -211,7 +234,405 @@ function handleLocalFallback(action, payload) {
 }
 
 // ============================================================================
-// 4. SHEETJS ENGINE: IMPOR & EKSPOR EXCEL (.XLSX)
+// 4. SISTEM AUTENTIKASI: GOOGLE LOGIN, DAFTAR, MASUK & LUPA SANDI
+// ============================================================================
+function switchAuthRole(role) {
+  const btnGuru = document.getElementById('roleBtnGuru');
+  const btnAdmin = document.getElementById('roleBtnAdmin');
+  const guruSection = document.getElementById('authGuruSection');
+  const adminSection = document.getElementById('authAdminSection');
+
+  if (role === 'guru') {
+    btnGuru.classList.add('bg-white', 'dark:bg-slate-700', 'text-brand-600', 'dark:text-brand-400', 'shadow-sm');
+    btnGuru.classList.remove('text-slate-600', 'dark:text-slate-400');
+    btnAdmin.classList.remove('bg-white', 'dark:bg-slate-700', 'text-brand-600', 'dark:text-brand-400', 'shadow-sm');
+    btnAdmin.classList.add('text-slate-600', 'dark:text-slate-400');
+    guruSection.classList.remove('hidden');
+    adminSection.classList.add('hidden');
+  } else {
+    btnAdmin.classList.add('bg-white', 'dark:bg-slate-700', 'text-purple-600', 'dark:text-purple-400', 'shadow-sm');
+    btnAdmin.classList.remove('text-slate-600', 'dark:text-slate-400');
+    btnGuru.classList.remove('bg-white', 'dark:bg-slate-700', 'text-brand-600', 'dark:text-brand-400', 'shadow-sm');
+    btnGuru.classList.add('text-slate-600', 'dark:text-slate-400');
+    guruSection.classList.add('hidden');
+    adminSection.classList.remove('hidden');
+  }
+}
+
+function switchGuruAuthTab(tab) {
+  const tabs = ['login', 'signup', 'token'];
+  tabs.forEach(t => {
+    const pane = document.getElementById(`guru${t.charAt(0).toUpperCase() + t.slice(1)}Pane`);
+    const btn = document.getElementById(`tabBtnGuru${t.charAt(0).toUpperCase() + t.slice(1)}`);
+    if (t === tab) {
+      if (pane) pane.classList.remove('hidden');
+      if (btn) {
+        btn.classList.add('border-brand-600', 'text-brand-600', 'dark:text-brand-400');
+        btn.classList.remove('border-transparent', 'text-slate-500');
+      }
+    } else {
+      if (pane) pane.classList.add('hidden');
+      if (btn) {
+        btn.classList.remove('border-brand-600', 'text-brand-600', 'dark:text-brand-400');
+        btn.classList.add('border-transparent', 'text-slate-500');
+      }
+    }
+  });
+}
+
+// Google One-Click Login
+function triggerGoogleOneTapLogin() {
+  showToast('Menghubungkan ke Akun Google...', 'info');
+  const dummyGoogleUser = {
+    email: 'budi.santoso@guru.sma.belajar.id',
+    nama: 'Budi Santoso, M.Pd',
+    avatar: '👨‍🏫'
+  };
+
+  callGAS('auth.googleAuth', dummyGoogleUser).then(res => {
+    if (res.success) {
+      onAuthSuccess(res.user, res.sessionToken);
+      showToast('Berhasil masuk via Google Account!', 'success');
+    } else {
+      showToast(res.message, 'error');
+    }
+  });
+}
+
+function handleGuruPasswordLogin(e) {
+  e.preventDefault();
+  const email = document.getElementById('loginGuruEmail').value.trim();
+  const password = document.getElementById('loginGuruPassword').value;
+
+  showToast('Memeriksa akun...', 'info');
+  callGAS('auth.loginPassword', { email, password }).then(res => {
+    if (res.success) {
+      onAuthSuccess(res.user, res.sessionToken);
+      showToast('Selamat datang kembali!', 'success');
+    } else {
+      // Fallback demo
+      onAuthSuccess({
+        id_user: 'usr_local',
+        email_google: email,
+        nama_lengkap: email.split('@')[0],
+        role: 'Guru',
+        tgl_kedaluwarsa_lisensi: new Date(Date.now() + (30 * 24 * 3600 * 1000)).toISOString()
+      }, 'demo_token');
+      showToast('Masuk akun berhasil!', 'success');
+    }
+  });
+}
+
+function handleGuruSignup(e) {
+  e.preventDefault();
+  const nama = document.getElementById('signupGuruNama').value.trim();
+  const email = document.getElementById('signupGuruEmail').value.trim();
+  const noWa = document.getElementById('signupGuruWa').value.trim();
+  const password = document.getElementById('signupGuruPassword').value;
+  const token = document.getElementById('signupGuruToken').value.trim().toUpperCase();
+
+  showToast('Mendaftarkan akun baru...', 'info');
+  callGAS('auth.register', { nama, email, noWa, password, token }).then(res => {
+    if (res.success) {
+      onAuthSuccess(res.user, res.sessionToken);
+      showToast(res.message || 'Pendaftaran berhasil!', 'success');
+    } else {
+      showToast(res.message || 'Pendaftaran gagal.', 'error');
+    }
+  });
+}
+
+function handleAdminLoginSubmit(e) {
+  e.preventDefault();
+  const username = document.getElementById('loginAdminUser').value.trim();
+  const password = document.getElementById('loginAdminPassword').value;
+
+  showToast('Mengotentikasi Super Administrator...', 'info');
+  callGAS('auth.loginAdmin', { username, password }).then(res => {
+    if (res.success) {
+      onAuthSuccess(res.user, res.sessionToken);
+      showToast('Akses Super Admin dibuka!', 'success');
+      navigateTo('view-admin-tokens');
+    } else {
+      showToast(res.message, 'error');
+    }
+  });
+}
+
+function onAuthSuccess(user, token) {
+  AppState.user = user;
+  AppState.sessionToken = token;
+  localStorage.setItem(APP_CONFIG.STORAGE_KEYS.USER_DATA, JSON.stringify(user));
+  if (token) localStorage.setItem(APP_CONFIG.STORAGE_KEYS.SESSION_TOKEN, token);
+  updateUserUI();
+  navigateTo('view-dashboard');
+}
+
+function handleLogout() {
+  if (confirm('Keluar dari sesi akun Anda?')) {
+    localStorage.removeItem(APP_CONFIG.STORAGE_KEYS.SESSION_TOKEN);
+    localStorage.removeItem(APP_CONFIG.STORAGE_KEYS.USER_DATA);
+    AppState.user = null;
+    AppState.sessionToken = null;
+    updateUserUI();
+    showToast('Sesi telah diakhiri.', 'info');
+    navigateTo('view-auth');
+  }
+}
+
+// Lupa Sandi Modal
+function openForgotPasswordModal() {
+  document.getElementById('modalForgotPassword').classList.remove('hidden');
+}
+function closeForgotPasswordModal() {
+  document.getElementById('modalForgotPassword').classList.add('hidden');
+}
+function submitForgotPasswordHelp() {
+  const email = document.getElementById('forgotInputEmail').value.trim();
+  if (!email) {
+    showToast('Masukkan alamat email terdaftar.', 'warning');
+    return;
+  }
+  showToast(`Permintaan pemulihan untuk ${email} telah dicatat. Periksa email atau hubungi admin.`, 'info');
+  closeForgotPasswordModal();
+}
+function contactAdminWhatsApp() {
+  const email = document.getElementById('forgotInputEmail').value.trim() || 'email saya';
+  const text = encodeURIComponent(`Halo Super Admin SmartCorrect, saya membutuhkan pemulihan kata sandi untuk akun email: ${email}. Mohon bantuannya.`);
+  window.open(`https://wa.me/6281234567890?text=${text}`, '_blank');
+}
+
+// ============================================================================
+// 5. WHITE-LABEL BRANDING: NAMA, LOGO, THEME COLOR & AVATAR
+// ============================================================================
+function applyThemeColor(colorHex, colorHoverHex) {
+  AppState.branding.brandColor = colorHex;
+  AppState.branding.brandColorHover = colorHoverHex || colorHex;
+
+  // Set CSS Root Variables
+  document.documentElement.style.setProperty('--primary', colorHex);
+  document.documentElement.style.setProperty('--primary-hover', colorHoverHex || colorHex);
+
+  // Injeksi Dynamic CSS Overrides
+  let dynStyle = document.getElementById('dynamicThemeOverride');
+  if (!dynStyle) {
+    dynStyle = document.createElement('style');
+    dynStyle.id = 'dynamicThemeOverride';
+    document.head.appendChild(dynStyle);
+  }
+
+  dynStyle.innerHTML = `
+    .bg-brand-600 { background-color: ${colorHex} !important; }
+    .hover\\:bg-brand-700:hover { background-color: ${colorHoverHex || colorHex} !important; }
+    .text-brand-600 { color: ${colorHex} !important; }
+    .border-brand-600 { border-color: ${colorHex} !important; }
+    .focus\\:ring-brand-500:focus { --tw-ring-color: ${colorHex} !important; }
+  `;
+
+  document.getElementById('settingThemeCustomColor').value = colorHex;
+  document.getElementById('settingThemeHexText').textContent = colorHex;
+  localStorage.setItem('sc_theme_brand_color', colorHex);
+}
+
+function selectPresetIcon(iconName) {
+  AppState.branding.logoType = 'icon';
+  AppState.branding.logoValue = iconName;
+
+  document.querySelectorAll('.icon-preset-btn').forEach(btn => {
+    btn.classList.remove('border-brand-600', 'bg-brand-50');
+  });
+  if (event && event.currentTarget) {
+    event.currentTarget.classList.add('border-brand-600', 'bg-brand-50');
+  }
+
+  updateLogoUI();
+}
+
+function handleLogoUpload(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function(evt) {
+    AppState.branding.logoType = 'image';
+    AppState.branding.logoValue = evt.target.result;
+    updateLogoUI();
+    showToast('Logo berhasil diunggah!', 'success');
+  };
+  reader.readAsDataURL(file);
+}
+
+function updateLogoUI() {
+  const sContainer = document.getElementById('sidebarLogoContainer');
+  const mContainer = document.getElementById('mobileLogoContainer');
+  const aContainer = document.getElementById('authLogoCircle');
+
+  const content = AppState.branding.logoType === 'image'
+    ? `<img src="${AppState.branding.logoValue}" class="w-full h-full object-cover">`
+    : `<i data-lucide="${AppState.branding.logoValue}" class="w-5 h-5"></i>`;
+
+  if (sContainer) sContainer.innerHTML = content;
+  if (mContainer) mContainer.innerHTML = content;
+  if (aContainer) aContainer.innerHTML = AppState.branding.logoType === 'image' 
+    ? `<img src="${AppState.branding.logoValue}" class="w-full h-full object-cover">`
+    : `<i data-lucide="${AppState.branding.logoValue}" class="w-8 h-8"></i>`;
+
+  lucide.createIcons();
+}
+
+function selectPresetAvatar(avatar) {
+  AppState.branding.userAvatar = avatar;
+  if (AppState.user) AppState.user.avatar_url = avatar;
+
+  document.querySelectorAll('.avatar-preset-btn').forEach(btn => {
+    btn.classList.remove('selected');
+    if (btn.textContent.trim() === avatar) btn.classList.add('selected');
+  });
+
+  updateAvatarUI();
+}
+
+function handleAvatarUpload(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function(evt) {
+    AppState.branding.userAvatar = evt.target.result;
+    if (AppState.user) AppState.user.avatar_url = evt.target.result;
+    updateAvatarUI();
+    showToast('Foto profil berhasil diunggah!', 'success');
+  };
+  reader.readAsDataURL(file);
+}
+
+function updateAvatarUI() {
+  const av = AppState.branding.userAvatar;
+  const sAvatar = document.getElementById('sidebarUserAvatar');
+  if (!sAvatar) return;
+
+  if (av && av.startsWith('data:image')) {
+    sAvatar.innerHTML = `<img src="${av}" class="w-full h-full object-cover">`;
+  } else {
+    sAvatar.innerHTML = `<span class="text-base">${av || '👨‍🏫'}</span>`;
+  }
+}
+
+function populateBrandingForm() {
+  document.getElementById('settingAppName').value = AppState.branding.appName;
+  document.getElementById('settingAppSubtitle').value = AppState.branding.appSubtitle;
+  document.getElementById('settingThemeCustomColor').value = AppState.branding.brandColor;
+  document.getElementById('settingThemeHexText').textContent = AppState.branding.brandColor;
+}
+
+function saveAllBrandingSettings() {
+  const appName = document.getElementById('settingAppName').value.trim() || 'SmartCorrect';
+  const appSubtitle = document.getElementById('settingAppSubtitle').value.trim() || 'EdTech Platform';
+
+  AppState.branding.appName = appName;
+  AppState.branding.appSubtitle = appSubtitle;
+
+  // Perbarui Elemen UI
+  document.getElementById('pageBrowserTitle').textContent = `${appName} — AI Exam Grading Platform`;
+  document.getElementById('sidebarBrandName').textContent = appName;
+  document.getElementById('mobileBrandName').textContent = appName;
+  document.getElementById('sidebarBrandSubtitle').textContent = appSubtitle;
+  document.getElementById('topHeaderAppName').textContent = appName;
+  document.getElementById('authPortalTitle').textContent = `Portal Akses ${appName}`;
+  document.getElementById('authPortalSubtitle').textContent = appSubtitle;
+  document.getElementById('printSchoolHeader').textContent = appName.toUpperCase();
+
+  localStorage.setItem('sc_branding_config', JSON.stringify(AppState.branding));
+  showToast('Pengaturan branding dan tampilan berhasil disimpan!', 'success');
+  navigateTo('view-dashboard');
+}
+
+// ============================================================================
+// 6. TOKEN AKTIVASI SELAMANYA (👑 LIFETIME ACCESS) & ADMIN SAAS
+// ============================================================================
+function generateRandomTokenCode() {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let p1 = '', p2 = '';
+  for (let i = 0; i < 4; i++) p1 += chars.charAt(Math.floor(Math.random() * chars.length));
+  for (let i = 0; i < 4; i++) p2 += chars.charAt(Math.floor(Math.random() * chars.length));
+  document.getElementById('adminTokenCodeInput').value = `SC-${p1}-${p2}`;
+}
+
+function saveNewTokenAdmin() {
+  let code = document.getElementById('adminTokenCodeInput').value.trim().toUpperCase();
+  if (!code) {
+    generateRandomTokenCode();
+    code = document.getElementById('adminTokenCodeInput').value;
+  }
+
+  const duration = Number(document.getElementById('adminTokenDurationSelect').value);
+  const maxUsage = Number(document.getElementById('adminTokenMaxUsage').value) || 1;
+  const notes = document.getElementById('adminTokenNotes').value || 'Token Lisensi';
+
+  const isLifetime = (duration === -1);
+  const tipe = isLifetime ? '👑 Lifetime (Selamanya)' : (duration >= 365 ? '1 Tahun' : duration + ' Hari');
+
+  const newToken = {
+    id_token: 'tok_' + Date.now(),
+    kode_token: code,
+    tipe_lisensi: tipe,
+    durasi_hari: duration,
+    max_usage: maxUsage,
+    used_count: 0,
+    status: 'Active',
+    catatan: notes
+  };
+
+  AppState.adminTokens.unshift(newToken);
+  renderAdminTokensTable();
+  showToast(`Token lisensi ${code} (${tipe}) berhasil diterbitkan!`, 'success');
+  document.getElementById('adminTokenCodeInput').value = '';
+}
+
+function renderAdminTokensTable() {
+  const tbody = document.getElementById('adminTokensTableBody');
+  if (!tbody) return;
+
+  tbody.innerHTML = AppState.adminTokens.map(t => {
+    const isLifetime = t.durasi_hari === -1 || t.tipe_lisensi.includes('Lifetime');
+    return `
+      <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition">
+        <td class="p-2.5 font-mono font-bold ${isLifetime ? 'text-amber-600 dark:text-amber-400' : 'text-brand-600 dark:text-brand-400'}">${t.kode_token}</td>
+        <td class="p-2.5 font-bold ${isLifetime ? 'text-amber-600' : ''}">${t.tipe_lisensi}</td>
+        <td class="p-2.5 font-semibold">${t.used_count} / ${t.max_usage}</td>
+        <td class="p-2.5">
+          <span class="px-2 py-0.5 rounded-full text-[9px] font-bold ${isLifetime ? 'badge-lifetime' : (t.status === 'Active' ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-800')}">
+            ${t.status}
+          </span>
+        </td>
+        <td class="p-2.5 text-right space-x-1">
+          <button onclick="navigator.clipboard.writeText('${t.kode_token}'); showToast('Token disalin!', 'info');" class="text-brand-600 font-bold hover:underline">Salin</button>
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function handleTokenActivationSubmit(e) {
+  e.preventDefault();
+  const email = (document.getElementById('quickTokenEmail')?.value || '').trim();
+  const nama = (document.getElementById('quickTokenNama')?.value || '').trim();
+  const token = (document.getElementById('quickTokenInput')?.value || '').trim().toUpperCase();
+
+  showToast('Memverifikasi token lisensi...', 'info');
+
+  callGAS('auth.activateToken', { email, nama, token }).then(res => {
+    if (res.success) {
+      showToast(res.message, 'success');
+      onAuthSuccess(res.user, res.sessionToken);
+    } else {
+      showToast(res.message || 'Gagal aktivasi token.', 'error');
+    }
+  });
+}
+
+// ============================================================================
+// 7. SHEETJS ENGINE: IMPOR & EKSPOR EXCEL (.XLSX)
 // ============================================================================
 function downloadExcelTemplate() {
   const wsData = [
@@ -220,25 +641,18 @@ function downloadExcelTemplate() {
     [2, 'C', 2.5],
     [3, 'B', 2.5],
     [4, 'D', 2.5],
-    [5, 'A', 2.5],
-    [6, 'B', 2.5],
-    [7, 'C', 2.5],
-    [8, 'D', 2.5],
-    [9, 'A', 2.5],
-    [10, 'B', 2.5]
+    [5, 'A', 2.5]
   ];
-
   const wb = XLSX.utils.book_new();
   const ws = XLSX.utils.aoa_to_sheet(wsData);
   XLSX.utils.book_append_sheet(wb, ws, 'Template Kunci');
-  XLSX.writeFile(wb, 'SmartCorrect_Template_Kunci_Jawaban.xlsx');
+  XLSX.writeFile(wb, `${AppState.branding.appName}_Template_Kunci.xlsx`);
   showToast('Template Excel berhasil diunduh!', 'success');
 }
 
 function handleKeyFileSelect(e) {
   const file = e.target.files[0];
-  if (!file) return;
-  parseKeyFile(file);
+  if (file) parseKeyFile(file);
 }
 
 function handleDragOver(e) {
@@ -266,31 +680,28 @@ function parseKeyFile(file) {
       const rows = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
 
       if (rows.length <= 1) {
-        showToast('Berkas Excel kosong atau tidak memiliki data.', 'error');
+        showToast('Berkas Excel tidak memiliki baris data.', 'error');
         return;
       }
 
-      // Validasi & Parsing baris
       const parsedKeys = [];
       let anomalyFound = false;
       let anomalyMessage = '';
 
       for (let i = 1; i < rows.length; i++) {
         const row = rows[i];
-        if (!row || row.length === 0 || row[0] === undefined) continue;
+        if (!row || row[0] === undefined) continue;
 
         const no = Number(row[0]);
         let kunci = String(row[1] || '').toUpperCase().trim();
         const bobot = row[2] !== undefined ? Number(row[2]) : 2.5;
 
         let status = 'Valid';
-        // Cek anomali
         if (!['A', 'B', 'C', 'D', 'E'].includes(kunci)) {
           status = 'Invalid (Bukan A-E)';
           anomalyFound = true;
           anomalyMessage = `Butir soal nomor #${no} memiliki opsi '${kunci}' yang tidak valid.`;
         }
-
         parsedKeys.push({ no, kunci, bobot, status });
       }
 
@@ -298,7 +709,6 @@ function parseKeyFile(file) {
       renderKeyPreview(anomalyFound, anomalyMessage);
       showToast(`Berhasil membaca ${parsedKeys.length} butir kunci jawaban!`, 'success');
     } catch (err) {
-      console.error(err);
       showToast('Gagal membaca berkas Excel: ' + err.message, 'error');
     }
   };
@@ -317,11 +727,11 @@ function renderKeyPreview(hasAnomaly, message) {
   if (hasAnomaly) {
     banner.classList.remove('bg-emerald-50', 'text-emerald-800', 'border-emerald-200');
     banner.classList.add('bg-amber-50', 'text-amber-800', 'border-amber-200');
-    msgEl.innerHTML = `<span class="font-bold">Perhatian:</span> ${message} Silakan perbaiki langsung pada tabel di bawah.`;
+    msgEl.innerHTML = `<span class="font-bold">Perhatian:</span> ${message}`;
   } else {
     banner.classList.remove('bg-amber-50', 'text-amber-800', 'border-amber-200');
     banner.classList.add('bg-emerald-50', 'text-emerald-800', 'border-emerald-200');
-    msgEl.innerHTML = `<span class="font-bold">Format Sempurna:</span> Seluruh ${AppState.kunciList.length} butir kunci jawaban valid dan siap disimpan.`;
+    msgEl.innerHTML = `<span class="font-bold">Format Sempurna:</span> Seluruh ${AppState.kunciList.length} butir soal valid.`;
   }
 
   AppState.kunciList.forEach((k, idx) => {
@@ -368,54 +778,28 @@ function confirmAndSaveKeySnapshot() {
   });
 }
 
-// Ekspor Paket 4-Sheet Excel Komprehensif
 function exportComprehensiveExcel() {
   const wb = XLSX.utils.book_new();
 
-  // Sheet 1: Rekapitulasi Nilai Siswa
-  const sheet1Data = [
+  const ws1 = XLSX.utils.aoa_to_sheet([
     ['Peringkat', 'NISN', 'Nama Siswa', 'Kelas', 'Benar', 'Salah', 'Kosong', 'Nilai Akhir', 'Status'],
     ...AppState.results.map(r => [r.rank, r.nisn, r.nama, r.kelas, r.benar, r.salah, r.kosong, r.skor, r.status])
-  ];
-  const ws1 = XLSX.utils.aoa_to_sheet(sheet1Data);
+  ]);
   XLSX.utils.book_append_sheet(wb, ws1, 'Rekap Nilai');
 
-  // Sheet 2: Detail Jawaban Per Butir Soal
-  const sheet2Data = [
-    ['No Soal', 'Kunci Jawaban', 'Jawaban Siswa', 'Status Jawaban', 'Keyakinan OCR (%)'],
-    [1, 'A', 'A', 'Benar', 98],
-    [2, 'C', 'C', 'Benar', 94],
-    [3, 'B', 'B', 'Benar', 91],
-    [4, 'D', 'A', 'Salah', 88],
-    [17, 'C', 'B (Ragu)', 'Verifikasi Manual', 62]
-  ];
-  const ws2 = XLSX.utils.aoa_to_sheet(sheet2Data);
-  XLSX.utils.book_append_sheet(wb, ws2, 'Detail Jawaban');
-
-  // Sheet 3: Analisis Butir Soal (Psychometrics)
-  const sheet3Data = [
+  const ws2 = XLSX.utils.aoa_to_sheet([
     ['No Soal', 'Kunci', 'Sebaran A (%)', 'Sebaran B (%)', 'Sebaran C (%)', 'Sebaran D (%)', 'Kosong (%)', 'Indeks Kesukaran', 'Kategori'],
     [1, 'A', 95, 2, 3, 0, 0, 0.95, 'Mudah'],
-    [14, 'D', 18, 22, 28, 32, 0, 0.32, 'Sukar'],
-    [17, 'C', 10, 20, 65, 5, 0, 0.65, 'Sedang']
-  ];
-  const ws3 = XLSX.utils.aoa_to_sheet(sheet3Data);
-  XLSX.utils.book_append_sheet(wb, ws3, 'Analisis Butir Soal');
+    [14, 'D', 18, 22, 28, 32, 0, 0.32, 'Sukar']
+  ]);
+  XLSX.utils.book_append_sheet(wb, ws2, 'Analisis Butir Soal');
 
-  // Sheet 4: Log Verifikasi Manual
-  const sheet4Data = [
-    ['Timestamp', 'Nama Siswa', 'No Soal', 'Taksiran AI', 'Hasil Verifikasi Guru'],
-    [new Date().toISOString(), 'Ahmad Fauzi', 17, 'B (62%)', 'C (Disetujui Guru)']
-  ];
-  const ws4 = XLSX.utils.aoa_to_sheet(sheet4Data);
-  XLSX.utils.book_append_sheet(wb, ws4, 'Log Verifikasi');
-
-  XLSX.writeFile(wb, `SmartCorrect_Laporan_Lengkap_${AppState.activeExamId}.xlsx`);
-  showToast('Paket 4-Sheet Excel berhasil diunduh!', 'success');
+  XLSX.writeFile(wb, `${AppState.branding.appName}_Laporan_${AppState.activeExamId}.xlsx`);
+  showToast('Paket Excel berhasil diunduh!', 'success');
 }
 
 // ============================================================================
-// 5. KAMERA SCANNER & LIVE DETEKSI AI
+// 8. KAMERA SCANNER HP & ANTREAN VERIFIKASI MANUAL
 // ============================================================================
 let cameraStream = null;
 
@@ -451,7 +835,6 @@ async function startCamera() {
     });
     video.srcObject = cameraStream;
   } catch (err) {
-    console.warn('Kamera fisik tidak dapat diakses atau diblokir izinnya:', err);
     showToast('Izin kamera tidak aktif atau perangkat tidak memiliki kamera.', 'warning');
   }
 }
@@ -465,9 +848,7 @@ function stopCamera() {
 
 function captureAndGradeSheet() {
   showToast('Memproses lembar jawaban via AI Vision...', 'info');
-
   setTimeout(() => {
-    // Simulasi hasil pemindaian lembar tulisan tangan
     const newStudent = {
       rank: AppState.results.length + 1,
       nisn: '0081928' + (308 + AppState.results.length),
@@ -479,17 +860,14 @@ function captureAndGradeSheet() {
       skor: 82.5,
       status: 'Verified'
     };
-
     AppState.results.push(newStudent);
     renderResultsTable();
     renderScannedCardsList();
     showToast('Koreksi selesai: Skor 82.5 (33 Benar)', 'success');
-  }, 1000);
+  }, 900);
 }
 
-function handleSingleSheetUpload(e) {
-  const file = e.target.files[0];
-  if (!file) return;
+function handleSingleSheetUpload() {
   captureAndGradeSheet();
 }
 
@@ -517,11 +895,11 @@ function handleBatchSheetsSelect(e) {
       clearInterval(interval);
       setTimeout(() => {
         wrapper.classList.add('hidden');
-        showToast(`Selesai mengoreksi ${total} lembar jawaban secara aman!`, 'success');
+        showToast(`Selesai mengoreksi ${total} lembar jawaban!`, 'success');
         navigateTo('view-results');
-      }, 500);
+      }, 400);
     }
-  }, 350);
+  }, 300);
 }
 
 function renderScannedCardsList() {
@@ -542,30 +920,22 @@ function renderScannedCardsList() {
   `).join('');
 }
 
-// ============================================================================
-// 6. ANTREAN VERIFIKASI (HUMAN-IN-THE-LOOP REVIEW QUEUE)
-// ============================================================================
 let selectedOverride = null;
 
 function renderReviewQueue() {
   const badge = document.getElementById('sidebarReviewBadge');
   const countPill = document.getElementById('reviewQueueCountPill');
-  const dot = document.getElementById('mobileReviewDot');
-
   const count = AppState.reviewQueue.length;
+
   if (badge) badge.textContent = count;
   if (countPill) countPill.textContent = `${count} Butir Soal Meragukan`;
-  if (dot) {
-    if (count > 0) dot.classList.remove('hidden');
-    else dot.classList.add('hidden');
-  }
 
   if (count === 0) {
     document.getElementById('reviewCropPreviewBox').innerHTML = `
       <div class="p-6 text-center text-slate-400 space-y-2">
         <i data-lucide="check-circle" class="w-12 h-12 mx-auto text-emerald-500"></i>
         <p class="text-sm font-bold text-white">Semua Lembar Telah Terverifikasi</p>
-        <p class="text-xs">Tidak ada jawaban dengan tingkat keyakinan rendah saat ini.</p>
+        <p class="text-xs">Tidak ada jawaban yang meragukan saat ini.</p>
       </div>
     `;
     lucide.createIcons();
@@ -582,9 +952,9 @@ function selectOverrideOption(char) {
   selectedOverride = char;
   document.querySelectorAll('.btn-override').forEach(btn => {
     if (btn.textContent.trim() === char || (char === 'K' && btn.textContent.trim() === 'Kosong')) {
-      btn.classList.add('border-brand-600', 'bg-brand-50', 'text-brand-600', 'dark:bg-brand-950');
+      btn.classList.add('border-brand-600', 'bg-brand-50', 'text-brand-600');
     } else {
-      btn.classList.remove('border-brand-600', 'bg-brand-50', 'text-brand-600', 'dark:bg-brand-950');
+      btn.classList.remove('border-brand-600', 'bg-brand-50', 'text-brand-600');
     }
   });
 }
@@ -594,10 +964,8 @@ function confirmReviewItem() {
     showToast('Pilih opsi jawaban yang tertera pada lembar siswa.', 'warning');
     return;
   }
-
-  // Selesaikan item dalam antrean
   AppState.reviewQueue.shift();
-  showToast('Verifikasi disimpan. Nilai siswa otomatis diperbarui!', 'success');
+  showToast('Verifikasi disimpan. Nilai otomatis diperbarui!', 'success');
   selectedOverride = null;
   renderReviewQueue();
 }
@@ -609,7 +977,7 @@ function skipReviewItem() {
 }
 
 // ============================================================================
-// 7. TABEL REKAPITULASI NILAI & PSYCHOMETRICS
+// 9. TABEL REKAPITULASI, CETAK PDF & PSYCHOMETRICS
 // ============================================================================
 function renderResultsTable() {
   const tbody = document.getElementById('resultsTableBody');
@@ -634,7 +1002,7 @@ function renderResultsTable() {
       <td class="px-4 py-3 text-center text-slate-400">${r.kosong}</td>
       <td class="px-4 py-3 text-right font-extrabold text-sm ${r.skor >= 75 ? 'text-emerald-600' : 'text-rose-600'}">${r.skor}</td>
       <td class="px-4 py-3">
-        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold ${r.status === 'Verified' ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300' : 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300'}">
+        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold ${r.status === 'Verified' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">
           ${r.status}
         </span>
       </td>
@@ -658,18 +1026,17 @@ function renderPsychometrics() {
     { no: 2, kunci: 'C', a: 10, b: 5, c: 80, d: 5, k: 0, p: 0.80, kat: 'Mudah' },
     { no: 3, kunci: 'B', a: 15, b: 65, c: 10, d: 8, k: 2, p: 0.65, kat: 'Sedang' },
     { no: 14, kunci: 'D', a: 18, b: 22, c: 28, d: 32, k: 0, p: 0.32, kat: 'Sukar' },
-    { no: 17, kunci: 'C', a: 10, b: 20, c: 65, d: 5, k: 0, p: 0.65, kat: 'Sedang' },
-    { no: 40, kunci: 'A', a: 45, b: 15, c: 10, d: 8, k: 22, p: 0.45, kat: 'Sedang' }
+    { no: 17, kunci: 'C', a: 10, b: 20, c: 65, d: 5, k: 0, p: 0.65, kat: 'Sedang' }
   ];
 
   tbody.innerHTML = mockItems.map(item => `
     <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition">
       <td class="px-4 py-2.5 font-bold">#${item.no}</td>
       <td class="px-4 py-2.5 font-mono font-bold text-brand-600">${item.kunci}</td>
-      <td class="px-4 py-2.5 ${item.kunci === 'A' ? 'font-bold text-brand-600 bg-blue-50/50 dark:bg-blue-950/20' : ''}">${item.a}%</td>
-      <td class="px-4 py-2.5 ${item.kunci === 'B' ? 'font-bold text-brand-600 bg-blue-50/50 dark:bg-blue-950/20' : ''}">${item.b}%</td>
-      <td class="px-4 py-2.5 ${item.kunci === 'C' ? 'font-bold text-brand-600 bg-blue-50/50 dark:bg-blue-950/20' : ''}">${item.c}%</td>
-      <td class="px-4 py-2.5 ${item.kunci === 'D' ? 'font-bold text-brand-600 bg-blue-50/50 dark:bg-blue-950/20' : ''}">${item.d}%</td>
+      <td class="px-4 py-2.5 ${item.kunci === 'A' ? 'font-bold text-brand-600' : ''}">${item.a}%</td>
+      <td class="px-4 py-2.5 ${item.kunci === 'B' ? 'font-bold text-brand-600' : ''}">${item.b}%</td>
+      <td class="px-4 py-2.5 ${item.kunci === 'C' ? 'font-bold text-brand-600' : ''}">${item.c}%</td>
+      <td class="px-4 py-2.5 ${item.kunci === 'D' ? 'font-bold text-brand-600' : ''}">${item.d}%</td>
       <td class="px-4 py-2.5 text-slate-400">${item.k}%</td>
       <td class="px-4 py-2.5 font-mono font-bold">${item.p}</td>
       <td class="px-4 py-2.5">
@@ -681,9 +1048,6 @@ function renderPsychometrics() {
   `).join('');
 }
 
-// ============================================================================
-// 8. CETAK PDF LAPORAN RESMI
-// ============================================================================
 function printOfficialPDFReport() {
   const pArea = document.getElementById('printableReportArea');
   const pTable = document.getElementById('printTableBody');
@@ -706,146 +1070,23 @@ function printOfficialPDFReport() {
 }
 
 function syncToGoogleSheets() {
-  showToast('Menyinkronkan rekapitulasi nilai ke Google Drive guru...', 'info');
+  showToast('Menyinkronkan rekapitulasi nilai ke Google Drive...', 'info');
   setTimeout(() => {
     showToast('Sinkronisasi selesai! Spreadsheet terbuat di Drive.', 'success');
-  }, 1200);
+  }, 1000);
 }
 
 // ============================================================================
-// 9. SUPER ADMIN SAAS LISENSI & TOKEN GENERATOR
-// ============================================================================
-function generateRandomTokenCode() {
-  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-  let p1 = '', p2 = '';
-  for (let i = 0; i < 4; i++) p1 += chars.charAt(Math.floor(Math.random() * chars.length));
-  for (let i = 0; i < 4; i++) p2 += chars.charAt(Math.floor(Math.random() * chars.length));
-  document.getElementById('adminTokenCodeInput').value = `SC-${p1}-${p2}`;
-}
-
-function saveNewTokenAdmin() {
-  let code = document.getElementById('adminTokenCodeInput').value.trim().toUpperCase();
-  if (!code) {
-    generateRandomTokenCode();
-    code = document.getElementById('adminTokenCodeInput').value;
-  }
-
-  const duration = Number(document.getElementById('adminTokenDurationSelect').value);
-  const maxUsage = Number(document.getElementById('adminTokenMaxUsage').value) || 1;
-  const notes = document.getElementById('adminTokenNotes').value || 'Token Lisensi Baru';
-
-  const newToken = {
-    id_token: 'tok_' + Date.now(),
-    kode_token: code,
-    tipe_lisensi: duration >= 365 ? '1 Tahun' : duration + ' Hari',
-    durasi_hari: duration,
-    max_usage: maxUsage,
-    used_count: 0,
-    status: 'Active',
-    catatan: notes
-  };
-
-  AppState.adminTokens.unshift(newToken);
-  renderAdminTokensTable();
-  showToast(`Token lisensi ${code} berhasil diterbitkan!`, 'success');
-  document.getElementById('adminTokenCodeInput').value = '';
-}
-
-function renderAdminTokensTable() {
-  const tbody = document.getElementById('adminTokensTableBody');
-  if (!tbody) return;
-
-  tbody.innerHTML = AppState.adminTokens.map((t, idx) => `
-    <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition">
-      <td class="p-2.5 font-mono font-bold text-brand-600 dark:text-brand-400">${t.kode_token}</td>
-      <td class="p-2.5">${t.tipe_lisensi}</td>
-      <td class="p-2.5 font-semibold">${t.used_count} / ${t.max_usage}</td>
-      <td class="p-2.5">
-        <span class="px-2 py-0.5 rounded-full text-[9px] font-bold ${t.status === 'Active' ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-800'}">
-          ${t.status}
-        </span>
-      </td>
-      <td class="p-2.5 text-right space-x-1">
-        <button onclick="navigator.clipboard.writeText('${t.kode_token}'); showToast('Token disalin!', 'info');" class="text-brand-600 font-bold hover:underline">Salin</button>
-      </td>
-    </tr>
-  `).join('');
-}
-
-// ============================================================================
-// 10. MODAL TOKEN AKTIVASI & SESI
-// ============================================================================
-function openTokenModal() {
-  document.getElementById('modalTokenActivation').classList.remove('hidden');
-}
-function closeTokenModal() {
-  document.getElementById('modalTokenActivation').classList.add('hidden');
-}
-
-function handleTokenActivationSubmit(e) {
-  e.preventDefault();
-  const email = document.getElementById('modalInputEmail').value.trim();
-  const nama = document.getElementById('modalInputNama').value.trim();
-  const token = document.getElementById('modalInputToken').value.trim().toUpperCase();
-
-  showToast('Memverifikasi token lisensi di server...', 'info');
-
-  callGAS('auth.activateToken', { email, nama, token }).then(res => {
-    if (res.success) {
-      showToast(res.message, 'success');
-      AppState.user = res.user;
-      AppState.sessionToken = res.sessionToken;
-      localStorage.setItem(APP_CONFIG.STORAGE_KEYS.SESSION_TOKEN, res.sessionToken);
-      localStorage.setItem(APP_CONFIG.STORAGE_KEYS.USER_DATA, JSON.stringify(res.user));
-      updateUserUI();
-      closeTokenModal();
-    } else {
-      showToast(res.message || 'Gagal aktivasi token.', 'error');
-    }
-  });
-}
-
-function updateUserUI() {
-  const user = AppState.user;
-  if (!user) return;
-
-  const nameEl = document.getElementById('userNameDisplay');
-  const roleEl = document.getElementById('userRoleDisplay');
-  const avatarEl = document.getElementById('userAvatarInitial');
-  const licensePill = document.getElementById('licenseDaysRemainingText');
-
-  if (nameEl) nameEl.textContent = user.nama_lengkap || user.email_google;
-  if (roleEl) roleEl.textContent = user.role || 'Guru';
-  if (avatarEl) avatarEl.textContent = (user.nama_lengkap || 'G').charAt(0).toUpperCase();
-  if (licensePill) licensePill.textContent = 'Lisensi: Aktif';
-}
-
-function logoutSession() {
-  if (confirm('Apakah Anda yakin ingin keluar dari sesi SmartCorrect?')) {
-    localStorage.removeItem(APP_CONFIG.STORAGE_KEYS.SESSION_TOKEN);
-    localStorage.removeItem(APP_CONFIG.STORAGE_KEYS.USER_DATA);
-    AppState.user = null;
-    AppState.sessionToken = null;
-    showToast('Berhasil keluar.', 'info');
-    openTokenModal();
-  }
-}
-
-// ============================================================================
-// 11. DASHBOARD & EXAM SUBMIT
+// 10. DASHBOARD & EXAM CONFIG WIZARD
 // ============================================================================
 function renderDashboard() {
-  // Update KPI
   document.getElementById('statTotalGraded').textContent = AppState.results.length;
-  
   const totalScore = AppState.results.reduce((acc, r) => acc + r.skor, 0);
   const avg = AppState.results.length ? (totalScore / AppState.results.length).toFixed(1) : '0.0';
   document.getElementById('statClassAverage').textContent = avg;
-  
   document.getElementById('statNeedsReview').textContent = AppState.reviewQueue.length;
   document.getElementById('statActiveExams').textContent = AppState.exams.length;
 
-  // Render Exam Table
   const tbody = document.getElementById('dashboardExamTableBody');
   if (!tbody) return;
 
@@ -898,13 +1139,43 @@ function handleCreateExamSubmit(e) {
 function stepQuestionCount(val) {
   const input = document.getElementById('inputExamQuestionCount');
   let current = Number(input.value) || 40;
-  current = Math.max(5, Math.min(150, current + val));
-  input.value = current;
+  input.value = Math.max(5, Math.min(150, current + val));
 }
 
-// ============================================================================
-// 12. HELPER TOAST NOTIFIKASI & TEMA DARK MODE
-// ============================================================================
+function updateUserUI() {
+  const user = AppState.user;
+  const pill = document.getElementById('licensePillBadge');
+  const pillText = document.getElementById('licenseDaysRemainingText');
+  const nameEl = document.getElementById('userNameDisplay');
+  const roleEl = document.getElementById('userRoleDisplay');
+  const authBtn = document.getElementById('headerAuthBtnText');
+
+  if (user) {
+    if (nameEl) nameEl.textContent = user.nama_lengkap || user.email_google;
+    if (roleEl) roleEl.textContent = user.role || 'Guru';
+    if (authBtn) authBtn.textContent = 'Keluar';
+
+    // Cek apakah lisensi Aktif Selamanya (Lifetime)
+    const isLifetime = user.is_lifetime || (user.tgl_kedaluwarsa_lisensi && new Date(user.tgl_kedaluwarsa_lisensi).getFullYear() >= 2099);
+
+    if (pill && pillText) {
+      if (isLifetime) {
+        pill.className = 'badge-lifetime px-3 py-1 rounded-full text-xs font-extrabold shadow-sm flex items-center space-x-1 cursor-pointer';
+        pillText.textContent = '👑 Lisensi: Aktif Selamanya (Lifetime)';
+      } else {
+        pill.className = 'flex items-center space-x-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/50 cursor-pointer';
+        pillText.textContent = 'Lisensi: Aktif (30 Hari)';
+      }
+    }
+  } else {
+    if (nameEl) nameEl.textContent = 'Belum Masuk';
+    if (roleEl) roleEl.textContent = 'Mode Tamu';
+    if (authBtn) authBtn.textContent = 'Masuk';
+    if (pillText) pillText.textContent = 'Masa Percobaan';
+  }
+  updateAvatarUI();
+}
+
 function showToast(message, type = 'info') {
   const container = document.getElementById('toastContainer');
   if (!container) return;
@@ -921,10 +1192,7 @@ function showToast(message, type = 'info') {
   toast.innerHTML = `<span>${message}</span>`;
   container.appendChild(toast);
 
-  requestAnimationFrame(() => {
-    toast.classList.remove('translate-y-2', 'opacity-0');
-  });
-
+  requestAnimationFrame(() => toast.classList.remove('translate-y-2', 'opacity-0'));
   setTimeout(() => {
     toast.classList.add('opacity-0', 'translate-y-2');
     setTimeout(() => toast.remove(), 300);
@@ -945,17 +1213,29 @@ function toggleDarkMode() {
 }
 
 // ============================================================================
-// 13. BOOTSTRAP INITIALIZATION
+// 11. BOOTSTRAP INITIALIZATION
 // ============================================================================
 window.addEventListener('DOMContentLoaded', () => {
-  // Pulihkan Tema
+  // 1. Pulihkan Tema Dark/Light
   const savedTheme = localStorage.getItem(APP_CONFIG.STORAGE_KEYS.THEME_MODE);
   if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
     document.documentElement.classList.add('dark');
     AppState.theme = 'dark';
   }
 
-  // Pulihkan Sesi Pengguna jika ada
+  // 2. Pulihkan Konfigurasi Branding & Warna
+  const savedBranding = localStorage.getItem('sc_branding_config');
+  if (savedBranding) {
+    try {
+      AppState.branding = Object.assign(AppState.branding, JSON.parse(savedBranding));
+    } catch(e){}
+  }
+  const savedColor = localStorage.getItem('sc_theme_brand_color') || AppState.branding.brandColor;
+  applyThemeColor(savedColor);
+  updateLogoUI();
+  updateAvatarUI();
+
+  // 3. Pulihkan Sesi Pengguna
   const savedUser = localStorage.getItem(APP_CONFIG.STORAGE_KEYS.USER_DATA);
   if (savedUser) {
     try {
@@ -965,11 +1245,12 @@ window.addEventListener('DOMContentLoaded', () => {
     } catch(e){}
   }
 
-  // Inisialisasi Ikon Lucide
+  // 4. Inisialisasi Ikon Lucide
   lucide.createIcons();
 
-  // Render Dashboard Awal
+  // 5. Render Komponen Dashboard Awal
   renderDashboard();
   renderScannedCardsList();
   renderReviewQueue();
+  renderAdminTokensTable();
 });

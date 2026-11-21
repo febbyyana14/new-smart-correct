@@ -74,6 +74,20 @@ body {
   background: #475569;
 }
 
+/* Dynamic Primary Color Overrides */
+.theme-custom-bg {
+  background-color: var(--primary) !important;
+}
+.theme-custom-text {
+  color: var(--primary) !important;
+}
+.theme-custom-border {
+  border-color: var(--primary) !important;
+}
+.theme-custom-ring:focus {
+  --tw-ring-color: var(--primary) !important;
+}
+
 /* Zero-Delay View Visibility Toggle */
 .app-view {
   display: none !important;
@@ -138,6 +152,19 @@ body {
   animation: pulseDot 2s infinite ease-in-out;
 }
 
+/* Gold Shimmer for Lifetime License */
+@keyframes goldShimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.badge-lifetime {
+  background: linear-gradient(90deg, #FEF08A, #F59E0B, #FEF08A);
+  background-size: 200% 100%;
+  animation: goldShimmer 3s infinite linear;
+  color: #78350F;
+  font-weight: 800;
+}
+
 /* Anomaly Table Highlighting */
 .row-anomaly {
   background-color: #FEF2F2 !important;
@@ -145,6 +172,18 @@ body {
 }
 .dark .row-anomaly {
   background-color: rgba(239, 68, 68, 0.15) !important;
+}
+
+/* Preset Avatar Selection Grid */
+.avatar-preset-btn {
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+.avatar-preset-btn:hover {
+  transform: scale(1.08);
+}
+.avatar-preset-btn.selected {
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.3);
 }
 
 /* Print Media Specific Styling (Official School PDF Preview) */

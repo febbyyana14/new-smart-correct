@@ -6,7 +6,8 @@
  * Database       : Google Sheets (Relational Models + Snapshotting)
  * Storage        : Google Drive (Folder Structure per Guru & Exam)
  * Security       : Script Properties (Zero Literal Secrets, Stateless HMAC Token, Anti-Tamper)
- * Performance    : CacheX Partitioning (100KB safe chunking), Versioned Scopes, Asynchronous Notif Queue
+ * Performance    : CacheX Partitioning (100KB safe chunking), Versioned Scopes
+ * Fitur Tambahan : Token Aktif Selamanya (Lifetime), White-Label Branding & GIS Auth
  * ============================================================================
  */
 
@@ -97,12 +98,19 @@ function hashPass_(pass, salt) {
 
 function buatSesi_(user) {
   const now = Date.now();
+  const isLifetime = user.tgl_kedaluwarsa_lisensi && (
+    new Date(user.tgl_kedaluwarsa_lisensi).getFullYear() >= 2099 ||
+    String(user.tgl_kedaluwarsa_lisensi).toLowerCase().includes('lifetime')
+  );
+
   return signToken_({
     id: user.id_user,
     email: user.email_google,
     role: user.role,
     nama: user.nama_lengkap,
+    avatar: user.avatar_url || '',
     exp_license: user.tgl_kedaluwarsa_lisensi,
+    is_lifetime: isLifetime ? 1 : 0,
     iat: now,
     exp: now + (SESI_JAM * 3600 * 1000)
   });
@@ -306,8 +314,8 @@ function doGet(e) {
     if (action === 'ping') {
       res = {
         success: true,
-        app: 'SmartCorrect API Engine',
-        version: '1.0.0',
+        app: prop_('APP_NAME', 'SmartCorrect'),
+        version: '1.1.0',
         timestamp: new Date().toISOString()
       };
     } else if (action === 'getConfig') {
@@ -352,8 +360,11 @@ function buildResponse_(data) {
 function dispatchAction_(action, data, token) {
   // Aksi Publik (Tanpa Sesi)
   if (action === 'auth.activateToken') return handleActivateToken(data);
+  if (action === 'auth.register') return handleRegisterUser(data);
+  if (action === 'auth.loginPassword') return handleLoginPassword(data);
   if (action === 'auth.loginAdmin') return handleAdminLogin(data);
   if (action === 'auth.googleAuth') return handleGoogleAuth(data);
+  if (action === 'auth.forgotPassword') return handleForgotPassword(data);
   if (action === 'app.getPublicConfig') return getPublicConfig();
 
   // Verifikasi Sesi Token Stateless untuk Aksi Terproteksi
@@ -362,8 +373,8 @@ function dispatchAction_(action, data, token) {
     return { success: false, code: 'AUTH_INVALID', message: 'Sesi kedaluwarsa atau tidak valid. Silakan login kembali.' };
   }
 
-  // Verifikasi Lisensi untuk Guru (Kecuali Super Admin dan menu profil)
-  if (user.role !== 'Super Admin' && !action.startsWith('auth.') && action !== 'user.getProfile') {
+  // Verifikasi Lisensi untuk Guru (Kecuali Super Admin atau Lifetime atau menu profil)
+  if (user.role !== 'Super Admin' && !user.is_lifetime && !action.startsWith('auth.') && action !== 'user.getProfile') {
     if (user.exp_license && new Date(user.exp_license).getTime() < Date.now()) {
       return {
         success: false,
@@ -378,8 +389,8 @@ function dispatchAction_(action, data, token) {
     // Auth & Profil
     case 'auth.checkSession':
       return { success: true, user: user };
-    case 'auth.renewTokenWithLicense':
-      return handleRenewLicense(user, data);
+    case 'auth.updateProfile':
+      return handleUpdateProfile(user, data);
 
     // Guru: Workspace & Master Data
     case 'teacher.getBootData':
@@ -401,7 +412,7 @@ function dispatchAction_(action, data, token) {
     case 'exam.getExamAnalytics':
       return handleGetExamAnalytics(user, data);
 
-    // Super Admin: Lisensi SaaS & Pengaturan
+    // Super Admin: Lisensi SaaS, Token Lifetime, & Branding
     case 'admin.getDashboardData':
       if (user.role !== 'Super Admin') throw new Error('Akses ditolak: Khusus Super Admin.');
       return handleAdminDashboardData();
@@ -424,7 +435,7 @@ function dispatchAction_(action, data, token) {
 }
 
 // ============================================================================
-// 7. BUSINESS LOGIC: SAAS LISENSI & TOKEN ENGINE
+// 7. BUSINESS LOGIC: SAAS LISENSI, LIFETIME TOKEN, & AUTENTIKASI
 // ============================================================================
 function getPublicConfig() {
   return {
@@ -438,6 +449,134 @@ function getPublicConfig() {
   };
 }
 
+function handleRegisterUser(data) {
+  const email = String(data.email || '').toLowerCase().trim();
+  const nama = String(data.nama || '').trim();
+  const noWa = String(data.noWa || '').trim();
+  const pass = String(data.password || '').trim();
+  const tokenInput = String(data.token || '').trim();
+
+  if (!email || !nama || !pass) {
+    return { success: false, message: 'Nama, Email, dan Kata Sandi wajib diisi.' };
+  }
+
+  const users = getTableData_(SHEET_NAMES.USERS);
+  const existing = users.find(u => String(u.email_google).toLowerCase().trim() === email);
+  if (existing) {
+    return { success: false, message: 'Email sudah terdaftar. Silakan login ke akun Anda.' };
+  }
+
+  const now = new Date();
+  const salt = Utilities.getUuid();
+  const hashPass = hashPass_(pass, salt);
+
+  // Jika menyertakan token aktivasi
+  let expIso = new Date(now.getTime() + (7 * 24 * 3600 * 1000)).toISOString(); // Default trial 7 hari jika tanpa token
+  let tokenUsed = 'TRIAL-7D';
+
+  if (tokenInput) {
+    const tokens = getTableData_(SHEET_NAMES.TOKENS);
+    const tokenRecord = tokens.find(t => String(t.kode_token).trim() === tokenInput);
+    if (!tokenRecord) {
+      return { success: false, message: 'Token aktivasi tidak valid.' };
+    }
+    if (String(tokenRecord.status).toLowerCase() !== 'active') {
+      return { success: false, message: 'Token berstatus ' + tokenRecord.status + ' dan tidak dapat digunakan.' };
+    }
+    const maxUsage = Number(tokenRecord.max_usage || 1);
+    const usedCount = Number(tokenRecord.used_count || 0);
+    if (usedCount >= maxUsage) {
+      return { success: false, message: 'Kuota penggunaan token ini telah habis.' };
+    }
+
+    const durasi = Number(tokenRecord.durasi_hari || 30);
+    if (durasi === -1 || durasi >= 36500 || String(tokenRecord.tipe_lisensi).toLowerCase().includes('lifetime')) {
+      expIso = '2099-12-31T23:59:59.000Z'; // Lifetime
+    } else {
+      expIso = new Date(now.getTime() + (durasi * 24 * 3600 * 1000)).toISOString();
+    }
+    tokenUsed = tokenInput;
+
+    // Update token
+    const newUsed = usedCount + 1;
+    const upd = { used_count: newUsed };
+    if (newUsed >= maxUsage) upd.status = 'Exhausted';
+    updateTableRowWhere_(SHEET_NAMES.TOKENS, 'id_token', tokenRecord.id_token, upd);
+  }
+
+  const userId = 'usr_' + Utilities.getUuid().slice(0, 8);
+  const newUser = {
+    id_user: userId,
+    email_google: email,
+    nama_lengkap: nama,
+    no_wa: noWa,
+    role: 'Guru',
+    status_akun: 'Active',
+    tgl_aktivasi: now.toISOString(),
+    tgl_kedaluwarsa_lisensi: expIso,
+    id_token_terakhir: tokenUsed,
+    avatar_url: '',
+    pass_hash: hashPass,
+    pass_salt: salt,
+    created_at: now.toISOString()
+  };
+
+  batchAppendRows_(SHEET_NAMES.USERS, [newUser]);
+  bumpUserCache_(userId);
+  bumpGlobalCache_();
+
+  const sessionToken = buatSesi_(newUser);
+  return {
+    success: true,
+    message: 'Pendaftaran berhasil! Selamat datang di ' + prop_('APP_NAME', 'SmartCorrect'),
+    sessionToken: sessionToken,
+    user: newUser
+  };
+}
+
+function handleLoginPassword(data) {
+  const email = String(data.email || '').toLowerCase().trim();
+  const pass = String(data.password || '');
+
+  if (!email || !pass) return { success: false, message: 'Email dan kata sandi wajib diisi.' };
+
+  const users = getTableData_(SHEET_NAMES.USERS);
+  const user = users.find(u => String(u.email_google).toLowerCase().trim() === email);
+
+  if (!user || !user.pass_hash || !user.pass_salt) {
+    return { success: false, message: 'Akun tidak ditemukan atau belum mengatur kata sandi. Gunakan Google Login atau daftar baru.' };
+  }
+
+  const testHash = hashPass_(pass, user.pass_salt);
+  if (!samaAman_(testHash, user.pass_hash)) {
+    return { success: false, message: 'Kata sandi yang Anda masukkan salah.' };
+  }
+
+  return {
+    success: true,
+    message: 'Login berhasil.',
+    sessionToken: buatSesi_(user),
+    user: user
+  };
+}
+
+function handleForgotPassword(data) {
+  const email = String(data.email || '').toLowerCase().trim();
+  const users = getTableData_(SHEET_NAMES.USERS);
+  const user = users.find(u => String(u.email_google).toLowerCase().trim() === email);
+
+  if (!user) {
+    return { success: false, message: 'Email ' + email + ' tidak terdaftar di sistem.' };
+  }
+
+  return {
+    success: true,
+    message: 'Petunjuk pemulihan sandi siap. Anda dapat mereset sandi atau menghubungi Super Admin.',
+    whatsappAdmin: prop_('ADMIN_WA', '6281234567890'),
+    email: email
+  };
+}
+
 function handleActivateToken(data) {
   const inputToken = String(data.token || '').trim();
   const email = String(data.email || '').toLowerCase().trim();
@@ -448,7 +587,6 @@ function handleActivateToken(data) {
     return { success: false, message: 'Token dan email Google wajib diisi.' };
   }
 
-  // 1. Ambil data Token dari Sheet Tokens_Lisensi
   const tokens = getTableData_(SHEET_NAMES.TOKENS);
   const tokenRecord = tokens.find(t => String(t.kode_token).trim() === inputToken);
 
@@ -467,19 +605,23 @@ function handleActivateToken(data) {
     return { success: false, message: 'Batas kuota klaim penggunaan token ini sudah habis.' };
   }
 
-  // 2. Hitung Tanggal Kedaluwarsa Baru
+  // Hitung Tanggal Kedaluwarsa Baru (Dukung Aktif Selamanya)
   const durasiHari = Number(tokenRecord.durasi_hari || 30);
   const now = new Date();
-  const expDate = new Date(now.getTime() + (durasiHari * 24 * 3600 * 1000));
-  const expIso = expDate.toISOString();
+  let expIso;
 
-  // 3. Upsert User ke Sheet Users
+  if (durasiHari === -1 || durasiHari >= 36500 || String(tokenRecord.tipe_lisensi).toLowerCase().includes('lifetime') || String(tokenRecord.tipe_lisensi).toLowerCase().includes('selamanya')) {
+    expIso = '2099-12-31T23:59:59.000Z'; // Aktif Selamanya
+  } else {
+    const expDate = new Date(now.getTime() + (durasiHari * 24 * 3600 * 1000));
+    expIso = expDate.toISOString();
+  }
+
   const users = getTableData_(SHEET_NAMES.USERS);
   let existingUser = users.find(u => String(u.email_google).toLowerCase().trim() === email);
   let userId = existingUser ? existingUser.id_user : 'usr_' + Utilities.getUuid().slice(0, 8);
 
   if (existingUser) {
-    // Perpanjangan akun
     updateTableRowWhere_(SHEET_NAMES.USERS, 'id_user', userId, {
       status_akun: 'Active',
       tgl_kedaluwarsa_lisensi: expIso,
@@ -488,7 +630,6 @@ function handleActivateToken(data) {
       nama_lengkap: nama || existingUser.nama_lengkap
     });
   } else {
-    // Akun Guru baru
     batchAppendRows_(SHEET_NAMES.USERS, [{
       id_user: userId,
       email_google: email,
@@ -499,11 +640,11 @@ function handleActivateToken(data) {
       tgl_aktivasi: now.toISOString(),
       tgl_kedaluwarsa_lisensi: expIso,
       id_token_terakhir: inputToken,
+      avatar_url: '',
       created_at: now.toISOString()
     }]);
   }
 
-  // 4. Update Kuota Token & Status jika habis
   const newUsedCount = usedCount + 1;
   const updateToken = { used_count: newUsedCount };
   if (newUsedCount >= maxUsage) {
@@ -511,7 +652,6 @@ function handleActivateToken(data) {
   }
   updateTableRowWhere_(SHEET_NAMES.TOKENS, 'id_token', tokenRecord.id_token, updateToken);
 
-  // 5. Catat ke Token_Logs
   batchAppendRows_(SHEET_NAMES.TOKEN_LOGS, [{
     id_log: 'log_' + Utilities.getUuid().slice(0, 8),
     id_token: tokenRecord.id_token,
@@ -521,11 +661,9 @@ function handleActivateToken(data) {
     perpanjangan_sampai_tgl: expIso
   }]);
 
-  // Invalidate Cache
   bumpUserCache_(userId);
   bumpGlobalCache_();
 
-  // 6. Buat Sesi Login Baru
   const sessionUser = {
     id_user: userId,
     email_google: email,
@@ -535,9 +673,13 @@ function handleActivateToken(data) {
   };
   const tokenJwt = buatSesi_(sessionUser);
 
+  const pesanSukses = expIso.startsWith('2099')
+    ? 'Selamat! Akun SmartCorrect Anda diaktifkan SELAMANYA (Lifetime Access) 👑'
+    : 'Selamat! Akun SmartCorrect berhasil diaktifkan hingga ' + expIso.slice(0, 10);
+
   return {
     success: true,
-    message: 'Selamat! Akun SmartCorrect berhasil diaktifkan hingga ' + expIso.slice(0, 10),
+    message: pesanSukses,
     sessionToken: tokenJwt,
     user: sessionUser
   };
@@ -546,23 +688,45 @@ function handleActivateToken(data) {
 function handleGoogleAuth(data) {
   const email = String(data.email || '').toLowerCase().trim();
   const nama = String(data.nama || '').trim();
+  const avatar = String(data.avatar || '').trim();
 
   if (!email) return { success: false, message: 'Email tidak ditemukan.' };
 
   const users = getTableData_(SHEET_NAMES.USERS);
-  const user = users.find(u => String(u.email_google).toLowerCase().trim() === email);
+  let user = users.find(u => String(u.email_google).toLowerCase().trim() === email);
 
   if (!user) {
-    return {
-      success: false,
-      code: 'USER_NOT_REGISTERED',
-      message: 'Email ' + email + ' belum terdaftar. Silakan aktivasi dengan token lisensi SmartCorrect Anda.'
+    // Registrasi otomatis pengguna Google baru dengan trial 7 hari
+    const userId = 'usr_' + Utilities.getUuid().slice(0, 8);
+    const now = new Date();
+    const trialExp = new Date(now.getTime() + (7 * 24 * 3600 * 1000)).toISOString();
+    
+    user = {
+      id_user: userId,
+      email_google: email,
+      nama_lengkap: nama || email.split('@')[0],
+      no_wa: '',
+      role: 'Guru',
+      status_akun: 'Active',
+      tgl_aktivasi: now.toISOString(),
+      tgl_kedaluwarsa_lisensi: trialExp,
+      id_token_terakhir: 'GOOGLE-TRIAL-7D',
+      avatar_url: avatar || '',
+      created_at: now.toISOString()
     };
+    batchAppendRows_(SHEET_NAMES.USERS, [user]);
+    bumpGlobalCache_();
+  } else if (avatar && !user.avatar_url) {
+    updateTableRowWhere_(SHEET_NAMES.USERS, 'id_user', user.id_user, { avatar_url: avatar });
+    user.avatar_url = avatar;
   }
 
-  // Cek masa aktif lisensi
   const isSuperAdmin = (user.role === 'Super Admin');
-  const isExpired = !isSuperAdmin && user.tgl_kedaluwarsa_lisensi && (new Date(user.tgl_kedaluwarsa_lisensi).getTime() < Date.now());
+  const isLifetime = user.tgl_kedaluwarsa_lisensi && (
+    new Date(user.tgl_kedaluwarsa_lisensi).getFullYear() >= 2099 ||
+    String(user.tgl_kedaluwarsa_lisensi).toLowerCase().includes('lifetime')
+  );
+  const isExpired = !isSuperAdmin && !isLifetime && user.tgl_kedaluwarsa_lisensi && (new Date(user.tgl_kedaluwarsa_lisensi).getTime() < Date.now());
 
   const tokenJwt = buatSesi_(user);
   return {
@@ -573,8 +737,10 @@ function handleGoogleAuth(data) {
       email_google: user.email_google,
       role: user.role,
       nama_lengkap: user.nama_lengkap,
+      avatar_url: user.avatar_url || '',
       status_akun: user.status_akun,
       tgl_kedaluwarsa_lisensi: user.tgl_kedaluwarsa_lisensi,
+      is_lifetime: isLifetime,
       isExpired: isExpired
     }
   };
@@ -584,7 +750,6 @@ function handleAdminLogin(data) {
   const username = String(data.username || '').trim();
   const password = String(data.password || '');
 
-  // Proteksi Lockout Brute-Force (15 menit jika 5x gagal)
   const lockoutUntil = Number(prop_('DARURAT_KUNCI_SAMPAI') || 0);
   if (Date.now() < lockoutUntil) {
     const sisaMenit = Math.ceil((lockoutUntil - Date.now()) / 60000);
@@ -608,8 +773,10 @@ function handleAdminLogin(data) {
       id_user: 'admin_root',
       email_google: 'superadmin@smartcorrect.local',
       role: 'Super Admin',
-      nama_lengkap: 'Super Administrator',
-      tgl_kedaluwarsa_lisensi: '2099-12-31T23:59:59.000Z'
+      nama_lengkap: 'Super Administrator (Owner)',
+      avatar_url: prop_('ADMIN_AVATAR', ''),
+      tgl_kedaluwarsa_lisensi: '2099-12-31T23:59:59.000Z',
+      is_lifetime: true
     };
     return {
       success: true,
@@ -628,8 +795,19 @@ function handleAdminLogin(data) {
   }
 }
 
+function handleUpdateProfile(user, data) {
+  const updateObj = {};
+  if (data.nama_lengkap) updateObj.nama_lengkap = data.nama_lengkap;
+  if (data.avatar_url !== undefined) updateObj.avatar_url = data.avatar_url;
+  if (data.no_wa) updateObj.no_wa = data.no_wa;
+
+  updateTableRowWhere_(SHEET_NAMES.USERS, 'id_user', user.id, updateObj);
+  bumpUserCache_(user.id);
+  return { success: true, message: 'Profil berhasil diperbarui.', user: updateObj };
+}
+
 // ============================================================================
-// 8. BUSINESS LOGIC: GURU & UJIAN (Instant SWR + Psychometrics)
+// 8. BUSINESS LOGIC: GURU & UJIAN
 // ============================================================================
 function handleTeacherBootData(user) {
   const cacheKey = getCacheVersionKey_(user.id) + '_boot';
@@ -642,12 +820,16 @@ function handleTeacherBootData(user) {
   const allUjian = getTableData_(SHEET_NAMES.UJIAN).filter(u => String(u.id_guru_pemilik) === String(userId));
   const allHasil = getTableData_(SHEET_NAMES.HASIL);
 
-  // Ambil hasil ujian milik guru terkait
   const examIds = allUjian.map(u => String(u.id_ujian));
   const hasilUjian = allHasil.filter(h => examIds.indexOf(String(h.id_ujian)) > -1);
 
   const payload = {
     user: user,
+    branding: {
+      appName: prop_('APP_NAME', 'SmartCorrect'),
+      logoUrl: prop_('LOGO_URL', ''),
+      brandColor: prop_('BRAND_COLOR', '#2563EB')
+    },
     mapel: allMapel,
     siswa: allSiswa,
     ujian: allUjian,
@@ -659,13 +841,12 @@ function handleTeacherBootData(user) {
     }
   };
 
-  CacheX.put(cacheKey, payload, 1800); // Cache 30 menit
+  CacheX.put(cacheKey, payload, 1800);
   return { success: true, data: payload, fromCache: false };
 }
 
 function handleSaveSiswa(user, data) {
   const list = Array.isArray(data.siswaList) ? data.siswaList : [data];
-  const now = new Date().toISOString();
   const rows = list.map(s => ({
     id_siswa: s.id_siswa || ('sis_' + Utilities.getUuid().slice(0, 8)),
     nis_nisn: s.nis_nisn || '',
@@ -714,7 +895,6 @@ function handleSaveExam(user, data) {
     batchAppendRows_(SHEET_NAMES.UJIAN, [examRow]);
   }
 
-  // Jika kunci jawaban disertakan, buat Kunci_Jawaban_Snapshot
   if (data.kunciJawaban && Array.isArray(data.kunciJawaban)) {
     const snapshotId = 'snp_' + Utilities.getUuid().slice(0, 8);
     batchAppendRows_(SHEET_NAMES.KUNCI_SNAPSHOT, [{
@@ -731,7 +911,7 @@ function handleSaveExam(user, data) {
 
 function handleImportKeySnapshot(user, data) {
   const examId = data.id_ujian;
-  const keyList = data.kunciList; // Array of { no: 1, kunci: 'A', bobot: 2.5 }
+  const keyList = data.kunciList;
   if (!examId || !Array.isArray(keyList) || !keyList.length) {
     return { success: false, message: 'Data kunci jawaban tidak lengkap.' };
   }
@@ -756,13 +936,12 @@ function handleImportKeySnapshot(user, data) {
 
 function handleGradeSheetsBatch(user, data) {
   const examId = data.id_ujian;
-  const sheets = data.sheets || []; // Array of sheet results (Client-Side OCR / Vision API chunks)
+  const sheets = data.sheets || [];
 
   if (!examId || !sheets.length) {
     return { success: false, message: 'Tidak ada data lembar yang dikirim.' };
   }
 
-  // Ambil snapshot kunci ujian terbaru
   const allSnapshots = getTableData_(SHEET_NAMES.KUNCI_SNAPSHOT).filter(s => String(s.id_ujian) === String(examId));
   if (!allSnapshots.length) {
     return { success: false, message: 'Kunci jawaban untuk ujian ini belum disiapkan.' };
@@ -778,7 +957,7 @@ function handleGradeSheetsBatch(user, data) {
 
   sheets.forEach(sheetItem => {
     const hasilId = 'hsl_' + Utilities.getUuid().slice(0, 8);
-    const answers = sheetItem.answers || {}; // { "1": { ans: "A", conf: 92 }, ... }
+    const answers = sheetItem.answers || {};
 
     let benar = 0;
     let salah = 0;
@@ -851,13 +1030,8 @@ function handleGradeSheetsBatch(user, data) {
 
 function handleVerifyReviewItem(user, data) {
   const hasilId = data.id_hasil;
-  const verifiedAnswers = data.verifiedAnswers; // { "17": "C", ... }
+  if (!hasilId) return { success: false, message: 'Data verifikasi tidak lengkap.' };
 
-  if (!hasilId || !verifiedAnswers) {
-    return { success: false, message: 'Data verifikasi tidak lengkap.' };
-  }
-
-  // Update status hasil koreksi menjadi Verified
   updateTableRowWhere_(SHEET_NAMES.HASIL, 'id_hasil', hasilId, {
     status_koreksi: 'Verified',
     perlu_verifikasi: false
@@ -877,12 +1051,10 @@ function handleGetExamAnalytics(user, data) {
   const hasilIds = allHasil.map(h => String(h.id_hasil));
   const allDetail = getTableData_(SHEET_NAMES.DETAIL).filter(d => hasilIds.indexOf(String(d.id_hasil)) > -1);
 
-  // Snapshot Kunci
   const snapshotId = allHasil[0].id_snapshot;
   const snap = getTableData_(SHEET_NAMES.KUNCI_SNAPSHOT).find(s => String(s.id_snapshot) === String(snapshotId));
   const kunciList = snap ? JSON.parse(snap.kunci_jawaban_json || '[]') : [];
 
-  // Hitung Analisis Butir Soal (Psychometrics)
   const totalPeserta = allHasil.length;
   const itemsAnalysis = kunciList.map(k => {
     const qNo = k.no;
@@ -933,7 +1105,7 @@ function handleGetExamAnalytics(user, data) {
 }
 
 // ============================================================================
-// 9. BUSINESS LOGIC: SUPER ADMIN SAAS PANEL
+// 9. BUSINESS LOGIC: SUPER ADMIN SAAS PANEL (TOKEN LIFETIME & BRANDING)
 // ============================================================================
 function handleAdminDashboardData() {
   const users = getTableData_(SHEET_NAMES.USERS);
@@ -945,7 +1117,7 @@ function handleAdminDashboardData() {
     data: {
       users: users.map(u => redaksi_(u)),
       tokens: tokens,
-      logs: logs.slice(-50).reverse(), // 50 log terakhir
+      logs: logs.slice(-50).reverse(),
       settings: {
         appName: prop_('APP_NAME', 'SmartCorrect'),
         logoUrl: prop_('LOGO_URL', ''),
@@ -960,14 +1132,19 @@ function handleAdminDashboardData() {
 function handleAdminGenerateToken(data) {
   let code = String(data.kode_token || '').trim().toUpperCase();
   if (!code) {
-    // Generate kode unik acak: SC-XXXX-XXXX
     code = 'SC-' + acak_(4, 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789') + '-' + acak_(4, 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789');
   }
 
   const tokenId = 'tok_' + Utilities.getUuid().slice(0, 8);
   const durasiHari = Number(data.durasi_hari || 30);
   const maxUsage = Number(data.max_usage || 1);
-  const tipe = data.tipe_lisensi || (durasiHari >= 365 ? '1 Tahun' : (durasiHari + ' Hari'));
+  
+  let tipe = data.tipe_lisensi;
+  if (durasiHari === -1 || durasiHari >= 36500) {
+    tipe = '👑 Lifetime (Selamanya)';
+  } else if (!tipe) {
+    tipe = (durasiHari >= 365 ? '1 Tahun' : (durasiHari + ' Hari'));
+  }
 
   const tokenRow = {
     id_token: tokenId,
@@ -987,13 +1164,13 @@ function handleAdminGenerateToken(data) {
   return {
     success: true,
     token: tokenRow,
-    message: 'Token lisensi ' + code + ' berhasil dibuat.'
+    message: 'Token lisensi ' + code + ' (' + tipe + ') berhasil dibuat.'
   };
 }
 
 function handleAdminUpdateTokenStatus(data) {
   const tokenId = data.id_token;
-  const newStatus = data.status; // 'Active', 'Revoked', etc.
+  const newStatus = data.status;
   updateTableRowWhere_(SHEET_NAMES.TOKENS, 'id_token', tokenId, { status: newStatus });
   bumpGlobalCache_();
   return { success: true, message: 'Status token berhasil diperbarui.' };
@@ -1001,15 +1178,20 @@ function handleAdminUpdateTokenStatus(data) {
 
 function handleAdminExtendUserLicense(data) {
   const userId = data.id_user;
-  const additionalDays = Number(data.days || 30);
+  const days = Number(data.days || 30);
 
   const users = getTableData_(SHEET_NAMES.USERS);
   const user = users.find(u => String(u.id_user) === String(userId));
   if (!user) return { success: false, message: 'User tidak ditemukan.' };
 
-  const currentExp = user.tgl_kedaluwarsa_lisensi ? new Date(user.tgl_kedaluwarsa_lisensi) : new Date();
-  const baseTime = currentExp.getTime() > Date.now() ? currentExp.getTime() : Date.now();
-  const newExp = new Date(baseTime + (additionalDays * 24 * 3600 * 1000)).toISOString();
+  let newExp;
+  if (days === -1 || days >= 36500) {
+    newExp = '2099-12-31T23:59:59.000Z'; // Lifetime
+  } else {
+    const currentExp = user.tgl_kedaluwarsa_lisensi ? new Date(user.tgl_kedaluwarsa_lisensi) : new Date();
+    const baseTime = currentExp.getTime() > Date.now() ? currentExp.getTime() : Date.now();
+    newExp = new Date(baseTime + (days * 24 * 3600 * 1000)).toISOString();
+  }
 
   updateTableRowWhere_(SHEET_NAMES.USERS, 'id_user', userId, {
     tgl_kedaluwarsa_lisensi: newExp,
@@ -1017,13 +1199,11 @@ function handleAdminExtendUserLicense(data) {
   });
 
   bumpUserCache_(userId);
-  return { success: true, newExp: newExp, message: 'Lisensi berhasil diperpanjang hingga ' + newExp.slice(0, 10) };
+  return { success: true, newExp: newExp, message: 'Lisensi berhasil diperpanjang hingga ' + (newExp.startsWith('2099') ? 'SELAMANYA (Lifetime)' : newExp.slice(0, 10)) };
 }
 
 function handleAdminSaveSettings(data) {
-  const allowlist = ['APP_NAME', 'LOGO_URL', 'FAVICON_URL', 'BRAND_COLOR', 'CONFIDENCE_THRESHOLD'];
   const updateObj = {};
-
   if (data.appName !== undefined) updateObj['APP_NAME'] = data.appName;
   if (data.logoUrl !== undefined) updateObj['LOGO_URL'] = data.logoUrl;
   if (data.faviconUrl !== undefined) updateObj['FAVICON_URL'] = data.faviconUrl;
@@ -1032,7 +1212,7 @@ function handleAdminSaveSettings(data) {
 
   setProps_(updateObj);
   bumpGlobalCache_();
-  return { success: true, message: 'Pengaturan sistem berhasil disimpan.' };
+  return { success: true, message: 'Pengaturan identitas dan branding berhasil disimpan.' };
 }
 
 // ============================================================================
@@ -1042,7 +1222,6 @@ function setupAppEnvironment() {
   const APP_NAME = 'SmartCorrect SaaS Platform';
   Logger.log('🚀 Memulai setup lingkungan ' + APP_NAME + '...');
 
-  // 1. Siapkan Kriptografi Rahasia Sesi (Script Properties)
   secret_();
   if (!prop_('EMERGENCY_PASS_HASH')) {
     const rawPass = acak_(12, 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789');
@@ -1057,7 +1236,6 @@ function setupAppEnvironment() {
     Logger.log('   Password : ' + rawPass);
   }
 
-  // 2. Siapkan Folder Google Drive
   let rootFolder;
   const rootId = prop_('ROOT_FOLDER_ID');
   if (rootId) {
@@ -1068,7 +1246,6 @@ function setupAppEnvironment() {
     setProp_('ROOT_FOLDER_ID', rootFolder.getId());
   }
 
-  // 3. Siapkan Database Google Sheets
   let ss;
   const ssId = prop_('SPREADSHEET_ID');
   if (ssId) {
@@ -1080,9 +1257,8 @@ function setupAppEnvironment() {
     setProp_('SPREADSHEET_ID', ss.getId());
   }
 
-  // 4. Struktur Sheet Relasional
   const schema = {
-    [SHEET_NAMES.USERS]: ['id_user', 'email_google', 'nama_lengkap', 'no_wa', 'role', 'status_akun', 'tgl_aktivasi', 'tgl_kedaluwarsa_lisensi', 'id_token_terakhir', 'created_at'],
+    [SHEET_NAMES.USERS]: ['id_user', 'email_google', 'nama_lengkap', 'no_wa', 'role', 'status_akun', 'tgl_aktivasi', 'tgl_kedaluwarsa_lisensi', 'id_token_terakhir', 'avatar_url', 'pass_hash', 'pass_salt', 'created_at'],
     [SHEET_NAMES.TOKENS]: ['id_token', 'kode_token', 'tipe_lisensi', 'durasi_hari', 'max_usage', 'used_count', 'status', 'catatan_admin', 'created_at'],
     [SHEET_NAMES.TOKEN_LOGS]: ['id_log', 'id_token', 'id_user_pengklaim', 'tgl_klaim', 'perpanjangan_dari_tgl', 'perpanjangan_sampai_tgl'],
     [SHEET_NAMES.SISWA]: ['id_siswa', 'nis_nisn', 'nama_siswa', 'kelas', 'id_guru_pemilik'],
@@ -1105,24 +1281,34 @@ function setupAppEnvironment() {
     }
   });
 
-  // Hapus default 'Sheet1' jika ada
   const defaultSheet = ss.getSheetByName('Sheet1');
   if (defaultSheet && ss.getSheets().length > 1) {
     try { ss.deleteSheet(defaultSheet); } catch(e){}
   }
 
-  // Siapkan 1 Token Trial Awal untuk Pemilik jika belum ada token sama sekali
+  // Token Awal: 1 Token Demo (30 hari) & 1 Token Lifetime Selamanya
   const tokensSh = ss.getSheetByName(SHEET_NAMES.TOKENS);
   if (tokensSh.getLastRow() <= 1) {
     tokensSh.appendRow([
-      'tok_master_trial',
+      'tok_demo_30d',
       'SC-DEMO-2026',
       'Trial 30 Hari',
       30,
-      10, // 10 kuota klaim untuk demo
+      10,
       0,
       'Active',
-      'Token Demo Awal',
+      'Token Demo 30 Hari',
+      new Date().toISOString()
+    ]);
+    tokensSh.appendRow([
+      'tok_master_lifetime',
+      'SC-LIFETIME-VIP',
+      '👑 Lifetime (Selamanya)',
+      -1,
+      5,
+      0,
+      'Active',
+      'Token Khusus Aktif Selamanya',
       new Date().toISOString()
     ]);
   }
