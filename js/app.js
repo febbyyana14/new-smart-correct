@@ -844,7 +844,24 @@ function saveAllBrandingSettings() {
 
   localStorage.setItem('sc_branding_config', JSON.stringify(AppState.branding));
   showToast('Pengaturan branding dan tampilan berhasil disimpan!', 'success');
+  
+  // Sinkronisasi ke Cloud GAS agar otomatis terbaca di Handphone / Device lain
+  syncStateToCloud();
   navigateTo('view-dashboard');
+}
+
+// Sinkronisasi State ke Cloud Google Apps Script (Multi-Device Sync)
+function syncStateToCloud() {
+  callGAS('app.syncGlobalState', {
+    branding: AppState.branding,
+    exams: AppState.exams,
+    results: AppState.results,
+    psychometrics: AppState.psychometrics
+  }).then(res => {
+    if (res && res.success) {
+      console.log('✅ State berhasil disinkronkan ke cloud backend.');
+    }
+  }).catch(() => {});
 }
 
 // ============================================================================
@@ -1011,6 +1028,7 @@ function deleteExamKeyBank(examId) {
     renderSavedKeysTable();
     populateExamSelectors();
     handleScannerExamChange(AppState.activeExamId);
+    syncStateToCloud();
     showToast(`Bank kunci untuk "${exam.nama_ujian}" berhasil dihapus.`, 'info');
   }
 }
@@ -1024,6 +1042,7 @@ function clearAllKeyBanks() {
     renderSavedKeysTable();
     populateExamSelectors();
     handleScannerExamChange(AppState.activeExamId);
+    syncStateToCloud();
     showToast('Seluruh bank kunci jawaban telah dikosongkan!', 'info');
   }
 }
@@ -1190,6 +1209,7 @@ function confirmAndSaveKeySnapshot() {
   }).then(res => {
     showToast(`Kunci jawaban (${AppState.kunciList.length} soal) berhasil disimpan untuk ${exam.nama_ujian}!`, 'success');
     renderSavedKeysTable();
+    syncStateToCloud();
     switchKeyImportTab('saved');
   });
 }
@@ -1686,6 +1706,7 @@ function handleCreateExamSubmit(e) {
   showToast('Paket ujian baru berhasil dibuat! Lanjutkan mengisi kunci jawaban.', 'success');
   populateExamSelectors();
   renderSavedKeysTable();
+  syncStateToCloud();
   navigateTo('view-key-import');
   switchKeyImportTab('saved');
 }
@@ -1899,8 +1920,84 @@ window.addEventListener('DOMContentLoaded', () => {
   // 5. Pastikan View Dashboard Aktif
   navigateTo('view-dashboard');
 
-  // 6. Inisialisasi Ikon Lucide
+  // 6. Tarik Data Sinkronisasi Cloud GAS Terbaru (Cross-Device Sync HP & Desktop)
+  fetchCloudBootState();
+
+  // 7. Inisialisasi Ikon Lucide
   if (typeof lucide !== 'undefined') {
     lucide.createIcons();
   }
 });
+
+// Menarik State Terupdate dari Cloud Google Apps Script
+function fetchCloudBootState() {
+  callGAS('app.getPublicConfig').then(res => {
+    if (res && res.success && res.data) {
+      const d = res.data;
+      let changed = false;
+
+      if (d.appName || d.brandColor) {
+        if (d.appName) AppState.branding.appName = d.appName;
+        if (d.appSubtitle) AppState.branding.appSubtitle = d.appSubtitle;
+        if (d.brandColor) AppState.branding.brandColor = d.brandColor;
+        if (d.brandColorDark) AppState.branding.dashboardColorDark = d.brandColorDark;
+        if (d.dashboardAccentColor) AppState.branding.dashboardAccentColor = d.dashboardAccentColor;
+        if (d.logoType) AppState.branding.logoType = d.logoType;
+        if (d.logoValue) AppState.branding.logoValue = d.logoValue;
+        if (d.userAvatar) AppState.branding.userAvatar = d.userAvatar;
+
+        applyThemeColor(AppState.branding.brandColor, AppState.branding.brandColor, AppState.branding.dashboardColorDark, AppState.branding.dashboardAccentColor);
+        updateLogoUI();
+        updateAvatarUI();
+        saveAllBrandingUINoToast();
+        changed = true;
+      }
+
+      if (Array.isArray(d.exams) && d.exams.length > 0) {
+        AppState.exams = d.exams;
+        populateExamSelectors();
+        renderSavedKeysTable();
+        handleScannerExamChange(AppState.activeExamId);
+        changed = true;
+      }
+      if (Array.isArray(d.results)) {
+        AppState.results = d.results;
+        renderResultsTable();
+        renderDashboard();
+        changed = true;
+      }
+      if (Array.isArray(d.psychometrics)) {
+        AppState.psychometrics = d.psychometrics;
+        renderPsychometrics();
+        changed = true;
+      }
+
+      if (changed && typeof lucide !== 'undefined') {
+        lucide.createIcons();
+      }
+    }
+  }).catch(() => {});
+}
+
+function saveAllBrandingUINoToast() {
+  const appName = AppState.branding.appName || 'SmartCorrect';
+  const appSubtitle = AppState.branding.appSubtitle || 'EdTech Platform';
+
+  const bTitle = document.getElementById('pageBrowserTitle');
+  const sName = document.getElementById('sidebarBrandName');
+  const mName = document.getElementById('mobileBrandName');
+  const sSub = document.getElementById('sidebarBrandSubtitle');
+  const tHeader = document.getElementById('topHeaderAppName');
+  const aTitle = document.getElementById('authPortalTitle');
+  const aSub = document.getElementById('authPortalSubtitle');
+  const pHeader = document.getElementById('printSchoolHeader');
+
+  if (bTitle) bTitle.textContent = `${appName} — AI Exam Grading Platform`;
+  if (sName) sName.textContent = appName;
+  if (mName) mName.textContent = appName;
+  if (sSub) sSub.textContent = appSubtitle;
+  if (tHeader) tHeader.textContent = appName;
+  if (aTitle) aTitle.textContent = `Portal Akses ${appName}`;
+  if (aSub) aSub.textContent = appSubtitle;
+  if (pHeader) pHeader.textContent = appName.toUpperCase();
+}

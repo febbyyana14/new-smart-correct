@@ -359,17 +359,16 @@
             <form onsubmit="handleAdminLoginSubmit(event)" class="space-y-4">
               <div>
                 <label class="block text-xs font-bold text-slate-300 uppercase mb-1">Email / Username Super Admin</label>
-                <input type="text" id="loginAdminUser" required placeholder="admin" value="admin" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-700 bg-slate-800 text-white text-sm outline-none focus:ring-2 focus:ring-purple-500 font-medium">
+                <input type="text" id="loginAdminUser" required placeholder="Masukkan username admin" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-700 bg-slate-800 text-white text-sm outline-none focus:ring-2 focus:ring-purple-500 font-medium">
               </div>
               <div>
                 <label class="block text-xs font-bold text-slate-300 uppercase mb-1">Kata Sandi</label>
                 <div class="relative">
-                  <input type="password" id="loginAdminPassword" required placeholder="admin123" value="admin123" class="w-full px-3.5 py-2.5 pr-10 rounded-xl border border-slate-700 bg-slate-800 text-white text-sm outline-none focus:ring-2 focus:ring-purple-500 font-medium">
+                  <input type="password" id="loginAdminPassword" required placeholder="••••••••" class="w-full px-3.5 py-2.5 pr-10 rounded-xl border border-slate-700 bg-slate-800 text-white text-sm outline-none focus:ring-2 focus:ring-purple-500 font-medium">
                   <button type="button" onclick="togglePasswordVisibility('loginAdminPassword', 'eyeIconAdminLogin')" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-purple-300">
                     <i data-lucide="eye" id="eyeIconAdminLogin" class="w-4 h-4"></i>
                   </button>
                 </div>
-                <p class="text-[11px] text-slate-400 mt-1">Username: <code class="text-amber-400 font-bold">admin</code> &bull; Sandi: <code class="text-amber-400 font-bold">admin123</code></p>
               </div>
 
               <button type="submit" class="w-full py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-xl text-sm font-bold shadow-md transition flex items-center justify-center space-x-2">

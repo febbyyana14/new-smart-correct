@@ -399,6 +399,8 @@ function dispatchAction_(action, data, token) {
     // Guru: Workspace & Master Data
     case 'teacher.getBootData':
       return handleTeacherBootData(user);
+    case 'app.syncGlobalState':
+      return handleSyncGlobalState(user, data);
     case 'master.saveSiswa':
       return handleSaveSiswa(user, data);
     case 'master.saveMapel':
@@ -452,9 +454,17 @@ function getPublicConfig() {
     success: true,
     data: {
       appName: prop_('APP_NAME', 'SmartCorrect'),
-      logoUrl: prop_('LOGO_URL', ''),
+      appSubtitle: prop_('APP_SUBTITLE', 'EdTech Platform'),
       brandColor: prop_('BRAND_COLOR', '#2563EB'),
-      confidenceThreshold: Number(prop_('CONFIDENCE_THRESHOLD', '80'))
+      brandColorDark: prop_('BRAND_COLOR_DARK', '#1E40AF'),
+      dashboardAccentColor: prop_('DASHBOARD_ACCENT', '#F97316'),
+      logoType: prop_('LOGO_TYPE', 'icon'),
+      logoValue: prop_('LOGO_VALUE', 'check-check'),
+      userAvatar: prop_('USER_AVATAR', '👨‍🏫'),
+      confidenceThreshold: Number(prop_('CONFIDENCE_THRESHOLD', '80')),
+      exams: prop_('EXAMS_JSON') ? JSON.parse(prop_('EXAMS_JSON')) : null,
+      results: prop_('RESULTS_JSON') ? JSON.parse(prop_('RESULTS_JSON')) : null,
+      psychometrics: prop_('PSYCHO_JSON') ? JSON.parse(prop_('PSYCHO_JSON')) : null
     }
   };
 }
@@ -902,39 +912,54 @@ function handleUpdateProfile(user, data) {
 // 8. BUSINESS LOGIC: GURU & UJIAN
 // ============================================================================
 function handleTeacherBootData(user) {
-  const cacheKey = getCacheVersionKey_(user.id) + '_boot';
-  const cached = CacheX.get(cacheKey);
-  if (cached) return { success: true, data: cached, fromCache: true };
+  const isSuperAdmin = (user.role === 'Super Admin');
+  const userId = user.id_user || user.id;
 
-  const userId = user.id;
-  const allMapel = getTableData_(SHEET_NAMES.MAPEL).filter(m => String(m.id_guru_pemilik) === String(userId));
-  const allSiswa = getTableData_(SHEET_NAMES.SISWA).filter(s => String(s.id_guru_pemilik) === String(userId));
-  const allUjian = getTableData_(SHEET_NAMES.UJIAN).filter(u => String(u.id_guru_pemilik) === String(userId));
-  const allHasil = getTableData_(SHEET_NAMES.HASIL);
+  const publicCfg = getPublicConfig();
 
-  const examIds = allUjian.map(u => String(u.id_ujian));
-  const hasilUjian = allHasil.filter(h => examIds.indexOf(String(h.id_ujian)) > -1);
-
-  const payload = {
-    user: user,
-    branding: {
-      appName: prop_('APP_NAME', 'SmartCorrect'),
-      logoUrl: prop_('LOGO_URL', ''),
-      brandColor: prop_('BRAND_COLOR', '#2563EB')
-    },
-    mapel: allMapel,
-    siswa: allSiswa,
-    ujian: allUjian,
-    hasil: hasilUjian,
-    stats: {
-      totalGraded: hasilUjian.length,
-      needsReviewCount: hasilUjian.filter(h => String(h.status_koreksi) === 'Needs Review' || h.perlu_verifikasi === true || h.perlu_verifikasi === 'TRUE').length,
-      activeExamsCount: allUjian.length
+  return {
+    success: true,
+    data: {
+      branding: {
+        appName: prop_('APP_NAME', 'SmartCorrect'),
+        appSubtitle: prop_('APP_SUBTITLE', 'EdTech Platform'),
+        brandColor: prop_('BRAND_COLOR', '#2563EB'),
+        brandColorDark: prop_('BRAND_COLOR_DARK', '#1E40AF'),
+        dashboardAccentColor: prop_('DASHBOARD_ACCENT', '#F97316'),
+        logoType: prop_('LOGO_TYPE', 'icon'),
+        logoValue: prop_('LOGO_VALUE', 'check-check'),
+        userAvatar: prop_('USER_AVATAR', '👨‍🏫')
+      },
+      exams: prop_('EXAMS_JSON') ? JSON.parse(prop_('EXAMS_JSON')) : null,
+      results: prop_('RESULTS_JSON') ? JSON.parse(prop_('RESULTS_JSON')) : null,
+      psychometrics: prop_('PSYCHO_JSON') ? JSON.parse(prop_('PSYCHO_JSON')) : null
     }
   };
+}
 
-  CacheX.put(cacheKey, payload, 1800);
-  return { success: true, data: payload, fromCache: false };
+function handleSyncGlobalState(user, data) {
+  if (data.branding) {
+    if (data.branding.appName) setProp_('APP_NAME', data.branding.appName);
+    if (data.branding.appSubtitle) setProp_('APP_SUBTITLE', data.branding.appSubtitle);
+    if (data.branding.brandColor) setProp_('BRAND_COLOR', data.branding.brandColor);
+    if (data.branding.dashboardColorDark) setProp_('BRAND_COLOR_DARK', data.branding.dashboardColorDark);
+    if (data.branding.dashboardAccentColor) setProp_('DASHBOARD_ACCENT', data.branding.dashboardAccentColor);
+    if (data.branding.logoType) setProp_('LOGO_TYPE', data.branding.logoType);
+    if (data.branding.logoValue) setProp_('LOGO_VALUE', data.branding.logoValue);
+    if (data.branding.userAvatar) setProp_('USER_AVATAR', data.branding.userAvatar);
+  }
+  if (data.exams) {
+    setProp_('EXAMS_JSON', JSON.stringify(data.exams));
+  }
+  if (data.results) {
+    setProp_('RESULTS_JSON', JSON.stringify(data.results));
+  }
+  if (data.psychometrics) {
+    setProp_('PSYCHO_JSON', JSON.stringify(data.psychometrics));
+  }
+
+  bumpGlobalCache_();
+  return { success: true, message: 'Cloud database Google Sheets tersinkronisasi antar-perangkat!' };
 }
 
 function handleSaveSiswa(user, data) {
