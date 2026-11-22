@@ -250,7 +250,12 @@
                     <label class="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase">Kata Sandi</label>
                     <a href="javascript:void(0)" onclick="openForgotPasswordModal()" class="text-xs font-bold text-brand-600 hover:underline">Lupa Sandi?</a>
                   </div>
-                  <input type="password" id="loginGuruPassword" required placeholder="••••••••" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm outline-none focus:ring-2 focus:ring-brand-500">
+                  <div class="relative">
+                    <input type="password" id="loginGuruPassword" required placeholder="••••••••" class="w-full px-3.5 py-2.5 pr-10 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm outline-none focus:ring-2 focus:ring-brand-500">
+                    <button type="button" onclick="togglePasswordVisibility('loginGuruPassword', 'eyeIconGuruLogin')" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                      <i data-lucide="eye" id="eyeIconGuruLogin" class="w-4 h-4"></i>
+                    </button>
+                  </div>
                 </div>
 
                 <div class="flex items-center justify-between text-xs pt-1">
@@ -291,7 +296,12 @@
                   </div>
                   <div>
                     <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 uppercase mb-1">Buat Sandi</label>
-                    <input type="password" id="signupGuruPassword" required placeholder="••••••••" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm outline-none focus:ring-2 focus:ring-brand-500">
+                    <div class="relative">
+                      <input type="password" id="signupGuruPassword" required placeholder="••••••••" class="w-full px-3.5 py-2 pr-9 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm outline-none focus:ring-2 focus:ring-brand-500">
+                      <button type="button" onclick="togglePasswordVisibility('signupGuruPassword', 'eyeIconGuruSignup')" class="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                        <i data-lucide="eye" id="eyeIconGuruSignup" class="w-4 h-4"></i>
+                      </button>
+                    </div>
                   </div>
                 </div>
 
@@ -348,13 +358,18 @@
 
             <form onsubmit="handleAdminLoginSubmit(event)" class="space-y-4">
               <div>
-                <label class="block text-xs font-bold text-slate-300 uppercase mb-1">Username Super Admin</label>
-                <input type="text" id="loginAdminUser" required placeholder="admin" value="admin" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-700 bg-slate-800 text-white text-sm outline-none focus:ring-2 focus:ring-purple-500">
+                <label class="block text-xs font-bold text-slate-300 uppercase mb-1">Email / Username Super Admin</label>
+                <input type="text" id="loginAdminUser" required placeholder="admin" value="admin" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-700 bg-slate-800 text-white text-sm outline-none focus:ring-2 focus:ring-purple-500 font-medium">
               </div>
               <div>
-                <label class="block text-xs font-bold text-slate-300 uppercase mb-1">Kata Sandi Kriptografis</label>
-                <input type="password" id="loginAdminPassword" required placeholder="••••••••••••" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-700 bg-slate-800 text-white text-sm outline-none focus:ring-2 focus:ring-purple-500">
-                <p class="text-[11px] text-slate-400 mt-1">Sandi dihasilkan saat pertama kali menjalankan <code>setupAppEnvironment()</code> di Google Apps Script.</p>
+                <label class="block text-xs font-bold text-slate-300 uppercase mb-1">Kata Sandi</label>
+                <div class="relative">
+                  <input type="password" id="loginAdminPassword" required placeholder="admin123" value="admin123" class="w-full px-3.5 py-2.5 pr-10 rounded-xl border border-slate-700 bg-slate-800 text-white text-sm outline-none focus:ring-2 focus:ring-purple-500 font-medium">
+                  <button type="button" onclick="togglePasswordVisibility('loginAdminPassword', 'eyeIconAdminLogin')" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-purple-300">
+                    <i data-lucide="eye" id="eyeIconAdminLogin" class="w-4 h-4"></i>
+                  </button>
+                </div>
+                <p class="text-[11px] text-slate-400 mt-1">Username: <code class="text-amber-400 font-bold">admin</code> &bull; Sandi: <code class="text-amber-400 font-bold">admin123</code></p>
               </div>
 
               <button type="submit" class="w-full py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-xl text-sm font-bold shadow-md transition flex items-center justify-center space-x-2">
@@ -1241,15 +1256,30 @@
               <form onsubmit="handleChangeUserPassword(event)" class="space-y-3.5 max-w-md">
                 <div>
                   <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 uppercase mb-1">Kata Sandi Saat Ini</label>
-                  <input type="password" id="inputUserCurrentPassword" required placeholder="Masukkan kata sandi lama" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm outline-none focus:ring-2 focus:ring-brand-500">
+                  <div class="relative">
+                    <input type="password" id="inputUserCurrentPassword" required placeholder="Masukkan kata sandi lama" class="w-full px-3.5 py-2 pr-9 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm outline-none focus:ring-2 focus:ring-brand-500">
+                    <button type="button" onclick="togglePasswordVisibility('inputUserCurrentPassword', 'eyeIconUserCur')" class="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                      <i data-lucide="eye" id="eyeIconUserCur" class="w-4 h-4"></i>
+                    </button>
+                  </div>
                 </div>
                 <div>
                   <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 uppercase mb-1">Kata Sandi Baru</label>
-                  <input type="password" id="inputUserNewPassword" required minlength="6" placeholder="Minimal 6 karakter" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm outline-none focus:ring-2 focus:ring-brand-500">
+                  <div class="relative">
+                    <input type="password" id="inputUserNewPassword" required minlength="6" placeholder="Minimal 6 karakter" class="w-full px-3.5 py-2 pr-9 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm outline-none focus:ring-2 focus:ring-brand-500">
+                    <button type="button" onclick="togglePasswordVisibility('inputUserNewPassword', 'eyeIconUserNew')" class="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                      <i data-lucide="eye" id="eyeIconUserNew" class="w-4 h-4"></i>
+                    </button>
+                  </div>
                 </div>
                 <div>
                   <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 uppercase mb-1">Konfirmasi Kata Sandi Baru</label>
-                  <input type="password" id="inputUserConfirmPassword" required minlength="6" placeholder="Ulangi kata sandi baru" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm outline-none focus:ring-2 focus:ring-brand-500">
+                  <div class="relative">
+                    <input type="password" id="inputUserConfirmPassword" required minlength="6" placeholder="Ulangi kata sandi baru" class="w-full px-3.5 py-2 pr-9 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm outline-none focus:ring-2 focus:ring-brand-500">
+                    <button type="button" onclick="togglePasswordVisibility('inputUserConfirmPassword', 'eyeIconUserCnf')" class="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                      <i data-lucide="eye" id="eyeIconUserCnf" class="w-4 h-4"></i>
+                    </button>
+                  </div>
                 </div>
                 <button type="submit" class="px-5 py-2.5 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-xs font-bold shadow-md transition flex items-center space-x-1.5">
                   <i data-lucide="lock" class="w-3.5 h-3.5"></i>
@@ -1267,15 +1297,30 @@
               <form onsubmit="handleChangeAdminPassword(event)" class="space-y-3.5 max-w-md">
                 <div>
                   <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase mb-1">Kata Sandi Super Admin Saat Ini</label>
-                  <input type="password" id="inputAdminCurrentPassword" required placeholder="Masukkan sandi Super Admin aktif" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm outline-none focus:ring-2 focus:ring-purple-500">
+                  <div class="relative">
+                    <input type="password" id="inputAdminCurrentPassword" required placeholder="Masukkan sandi Super Admin aktif" class="w-full px-3.5 py-2 pr-9 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm outline-none focus:ring-2 focus:ring-purple-500">
+                    <button type="button" onclick="togglePasswordVisibility('inputAdminCurrentPassword', 'eyeIconAdminCur')" class="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-purple-400">
+                      <i data-lucide="eye" id="eyeIconAdminCur" class="w-4 h-4"></i>
+                    </button>
+                  </div>
                 </div>
                 <div>
                   <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase mb-1">Kata Sandi Baru Super Admin</label>
-                  <input type="password" id="inputAdminNewPassword" required minlength="8" placeholder="Minimal 8 karakter kombinasi kuat" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm outline-none focus:ring-2 focus:ring-purple-500">
+                  <div class="relative">
+                    <input type="password" id="inputAdminNewPassword" required minlength="6" placeholder="Minimal 6 karakter" class="w-full px-3.5 py-2 pr-9 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm outline-none focus:ring-2 focus:ring-purple-500">
+                    <button type="button" onclick="togglePasswordVisibility('inputAdminNewPassword', 'eyeIconAdminNew')" class="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-purple-400">
+                      <i data-lucide="eye" id="eyeIconAdminNew" class="w-4 h-4"></i>
+                    </button>
+                  </div>
                 </div>
                 <div>
                   <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase mb-1">Konfirmasi Kata Sandi Baru</label>
-                  <input type="password" id="inputAdminConfirmPassword" required minlength="8" placeholder="Ulangi sandi baru Super Admin" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm outline-none focus:ring-2 focus:ring-purple-500">
+                  <div class="relative">
+                    <input type="password" id="inputAdminConfirmPassword" required minlength="6" placeholder="Ulangi sandi baru Super Admin" class="w-full px-3.5 py-2 pr-9 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm outline-none focus:ring-2 focus:ring-purple-500">
+                    <button type="button" onclick="togglePasswordVisibility('inputAdminConfirmPassword', 'eyeIconAdminCnf')" class="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-purple-400">
+                      <i data-lucide="eye" id="eyeIconAdminCnf" class="w-4 h-4"></i>
+                    </button>
+                  </div>
                 </div>
                 <button type="submit" class="px-5 py-2.5 bg-purple-600 hover:bg-purple-700 text-white rounded-xl text-xs font-bold shadow-md transition flex items-center space-x-1.5">
                   <i data-lucide="shield" class="w-3.5 h-3.5"></i>
