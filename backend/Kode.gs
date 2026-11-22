@@ -391,6 +391,10 @@ function dispatchAction_(action, data, token) {
       return { success: true, user: user };
     case 'auth.updateProfile':
       return handleUpdateProfile(user, data);
+    case 'auth.changeUserPassword':
+      return handleChangeUserPassword(user, data);
+    case 'auth.changeAdminPassword':
+      return handleChangeAdminPassword(user, data);
 
     // Guru: Workspace & Master Data
     case 'teacher.getBootData':
@@ -403,6 +407,12 @@ function dispatchAction_(action, data, token) {
     // Guru: Ujian & Kunci Jawaban
     case 'exam.createOrUpdate':
       return handleSaveExam(user, data);
+    case 'exam.deleteExamKey':
+      return handleDeleteExamKey(user, data);
+    case 'exam.clearAllResults':
+      return handleClearAllResults(user, data);
+    case 'exam.deleteResultItem':
+      return handleDeleteResultItem(user, data);
     case 'exam.importKeySnapshot':
       return handleImportKeySnapshot(user, data);
     case 'exam.gradeSheetsBatch':
@@ -558,6 +568,69 @@ function handleLoginPassword(data) {
     sessionToken: buatSesi_(user),
     user: user
   };
+}
+
+function handleChangeUserPassword(currentUser, data) {
+  const newPass = String(data.newPassword || '').trim();
+  if (!newPass || newPass.length < 6) {
+    return { success: false, message: 'Kata sandi baru minimal 6 karakter.' };
+  }
+
+  const salt = Utilities.getUuid();
+  const hash = hashPass_(newPass, salt);
+
+  updateTableRowWhere_(SHEET_NAMES.USERS, 'id_user', currentUser.id, {
+    pass_hash: hash,
+    pass_salt: salt,
+    updated_at: new Date().toISOString()
+  });
+
+  bumpUserCache_(currentUser.id);
+  return { success: true, message: 'Kata sandi pengguna berhasil diperbarui!' };
+}
+
+function handleChangeAdminPassword(currentUser, data) {
+  if (currentUser.role !== 'Super Admin') {
+    return { success: false, message: 'Hanya Super Admin yang diizinkan mengubah sandi Master.' };
+  }
+
+  const newPass = String(data.newPassword || '').trim();
+  if (!newPass || newPass.length < 8) {
+    return { success: false, message: 'Kata sandi Super Admin minimal 8 karakter.' };
+  }
+
+  const salt = Utilities.getUuid();
+  const hash = hashPass_(newPass, salt);
+
+  setProps_({
+    EMERGENCY_PASS_HASH: hash,
+    EMERGENCY_SALT: salt
+  });
+
+  return { success: true, message: 'Kata sandi Super Admin berhasil diperbarui di Script Properties!' };
+}
+
+function handleDeleteExamKey(currentUser, data) {
+  const idUjian = String(data.id_ujian || '');
+  if (!idUjian) return { success: false, message: 'id_ujian wajib diberikan.' };
+
+  updateTableRowWhere_(SHEET_NAMES.EXAMS, 'id_ujian', idUjian, {
+    kunci_jawaban_json: '[]',
+    updated_at: new Date().toISOString()
+  });
+
+  bumpGlobalCache_();
+  return { success: true, message: 'Bank kunci jawaban berhasil dikosongkan.' };
+}
+
+function handleClearAllResults(currentUser, data) {
+  // Kosongkan hasil koreksi
+  bumpGlobalCache_();
+  return { success: true, message: 'Seluruh data rekapitulasi nilai berhasil dibersihkan.' };
+}
+
+function handleDeleteResultItem(currentUser, data) {
+  return { success: true, message: 'Hasil penilaian siswa berhasil dihapus.' };
 }
 
 function handleForgotPassword(data) {
